@@ -4,77 +4,47 @@
 <meta charset="UTF-8">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+Cjx0ZXh0IHk9IjI4IiBmb250LXNpemU9IjI4Ij7wn6aVPC90ZXh0Pgo8L3N2Zz4=">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🦕 恐龙闪卡大全 🦖</title>
+<title>🦕 恐龙闪卡 🦖</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
 body {
-  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Comic Sans MS', sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background: linear-gradient(135deg, #FFF5E6 0%, #FFE8D6 50%, #FFDAB9 100%);
-  touch-action: pan-y;
   user-select: none;
 }
 
-/* Header */
 .header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  padding: 8px 12px;
+  padding: 12px 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-.header-top {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 6px;
+  text-align: center;
 }
 .app-title {
-  font-size: 1.2em; font-weight: 800;
+  font-size: 1.4em; font-weight: 800;
   background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.progress-text { font-size: 0.75em; color: #888; font-weight: 600; }
 .progress-bar {
-  width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden;
-  margin-bottom: 6px;
+  width: 100%; height: 6px; background: #eee; border-radius: 3px; 
+  overflow: hidden; margin-top: 8px;
 }
 .progress-fill {
   height: 100%; border-radius: 3px; transition: width 0.3s;
   background: linear-gradient(90deg, #FF6B6B, #FFE66D, #4ECDC4);
 }
 
-/* Filter row */
-.filter-row {
-  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-}
-.era-btn, .diff-btn {
-  padding: 4px 10px; border-radius: 20px; border: 2px solid #ddd;
-  font-size: 0.8em; font-weight: 700; cursor: pointer;
-  background: white; transition: all 0.2s;
-}
-.era-btn.active, .diff-btn.active {
-  color: white; border-color: transparent; transform: scale(1.05);
-}
-.era-btn[data-era="all"].active { background: linear-gradient(135deg, #666, #999); }
-.era-btn[data-era="triassic"].active { background: linear-gradient(135deg, #2ECC71, #27AE60); }
-.era-btn[data-era="jurassic"].active { background: linear-gradient(135deg, #3498DB, #2980B9); }
-.era-btn[data-era="cretaceous"].active { background: linear-gradient(135deg, #E74C3C, #E67E22); }
-.diff-btn[data-diff="all"].active { background: #666; }
-.diff-btn[data-diff="1"].active { background: #F1C40F; }
-.diff-btn[data-diff="2"].active { background: #E67E22; }
-.diff-btn[data-diff="3"].active { background: #E74C3C; }
-
-/* Card Container */
 .card-container {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
-  padding: 110px 16px 70px;
+  padding: 90px 16px 80px;
 }
 
-/* Card */
 .card-wrapper {
-  width: 100%; max-width: 420px; aspect-ratio: 3/4;
-  max-height: calc(100vh - 180px);
+  width: 100%; max-width: 400px; aspect-ratio: 3/4;
+  max-height: calc(100vh - 170px);
   perspective: 1200px;
   cursor: pointer;
 }
@@ -87,103 +57,59 @@ body {
 .card-face {
   position: absolute; inset: 0; border-radius: 24px;
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   padding: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   overflow-y: auto;
   display: flex; flex-direction: column;
 }
+.card-front {
+  background: linear-gradient(160deg, #E3F2FD 0%, #90CAF9 50%, #64B5F6 100%);
+}
 .card-back {
   transform: rotateY(180deg);
+  background: linear-gradient(160deg, #E8F5E9 0%, #A5D6A7 100%);
 }
 
-/* Era themes */
-.era-triassic .card-front { background: linear-gradient(160deg, #E8F8E8 0%, #B8E6B8 30%, #7DD87D 100%); }
-.era-triassic .card-back { background: linear-gradient(160deg, #D4F0D4 0%, #A8D8A8 100%); }
-.era-jurassic .card-front { background: linear-gradient(160deg, #E3F2FD 0%, #90CAF9 30%, #64B5F6 100%); }
-.era-jurassic .card-back { background: linear-gradient(160deg, #BBDEFB 0%, #90CAF9 100%); }
-.era-cretaceous .card-front { background: linear-gradient(160deg, #FFF3E0 0%, #FFCC80 30%, #FFB74D 100%); }
-.era-cretaceous .card-back { background: linear-gradient(160deg, #FFE0B2 0%, #FFCC80 100%); }
-
-.card-number {
-  position: absolute; top: 12px; right: 16px;
-  font-size: 0.7em; font-weight: 700; opacity: 0.5;
+.dino-img {
+  text-align: center; margin: 10px 0;
+  height: 180px; display: flex; align-items: center; justify-content: center;
 }
-.card-seen {
-  position: absolute; top: 12px; left: 16px; font-size: 1em;
+.dino-img img {
+  max-height: 170px; max-width: 90%;
+  object-fit: contain;
+  filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.2));
 }
 
-.dino-name-cn { font-size: 1.8em; font-weight: 900; text-align: center; color: #333; }
-.dino-name-en { font-size: 1em; font-weight: 600; text-align: center; color: #666; margin-bottom: 4px; }
-.dino-sound {
-  text-align: center; font-size: 1.3em; font-weight: 700;
-  color: #E74C3C; margin: 4px 0;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
+.dino-name-cn { font-size: 2em; font-weight: 900; text-align: center; color: #333; }
+.dino-name-en { font-size: 1.1em; font-weight: 600; text-align: center; color: #555; margin: 4px 0; }
 .dino-meta {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
-  margin: 6px 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  margin: 12px 0;
 }
 .meta-tag {
-  padding: 3px 8px; border-radius: 12px;
-  font-size: 0.72em; font-weight: 600;
-  background: rgba(255,255,255,0.6);
-  color: #555;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 0.85em; font-weight: 600;
+  background: rgba(255,255,255,0.7);
+  color: #444;
 }
-.dino-size { text-align: center; font-size: 0.85em; color: #555; margin: 4px 0; }
 .flip-hint {
-  text-align: center; font-size: 0.75em; color: rgba(0,0,0,0.35);
-  margin-top: auto; padding-top: 8px;
+  text-align: center; font-size: 0.8em; color: rgba(0,0,0,0.4);
+  margin-top: auto;
 }
 
-/* Back face */
-.back-title {
-  font-size: 1.1em; font-weight: 800; text-align: center;
-  margin-bottom: 8px; color: #333;
-}
+.back-title { font-size: 1.2em; font-weight: 800; text-align: center; margin-bottom: 12px; }
 .fun-fact {
-  font-size: 0.9em; line-height: 1.6; color: #444;
-  background: rgba(255,255,255,0.5); border-radius: 16px;
-  padding: 12px; margin-bottom: 10px;
-}
-.fun-fact-label { font-weight: 800; font-size: 1em; }
-.quiz-section {
+  font-size: 1em; line-height: 1.7; color: #333;
   background: rgba(255,255,255,0.6); border-radius: 16px;
-  padding: 12px;
+  padding: 16px;
 }
-.quiz-question { font-size: 0.9em; font-weight: 700; color: #333; margin-bottom: 8px; }
-.quiz-options { display: flex; flex-direction: column; gap: 6px; }
-.quiz-opt {
-  padding: 10px 14px; border-radius: 14px; font-size: 0.85em;
-  font-weight: 600; border: 2px solid rgba(0,0,0,0.1);
-  background: rgba(255,255,255,0.8); cursor: pointer;
-  transition: all 0.2s; text-align: left;
-}
-.quiz-opt:active { transform: scale(0.97); }
-.quiz-opt.correct {
-  background: #C8E6C9 !important; border-color: #4CAF50 !important;
-  color: #2E7D32;
-}
-.quiz-opt.wrong {
-  background: #FFCDD2 !important; border-color: #F44336 !important;
-  color: #C62828;
-}
-.quiz-result {
-  text-align: center; font-size: 1.2em; font-weight: 800;
-  margin-top: 8px; min-height: 1.5em;
-}
+.fun-fact-label { font-weight: 800; color: #E74C3C; }
 
-/* Navigation */
 .nav-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  padding: 10px 16px;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  padding: 12px 20px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   display: flex; justify-content: space-between; align-items: center;
   box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
 }
@@ -197,565 +123,206 @@ body {
 }
 .nav-btn:active { transform: scale(0.9); }
 .nav-btn:disabled { opacity: 0.3; }
-.card-counter {
-  font-size: 1.1em; font-weight: 800; color: #555;
-}
-
-/* Empty state */
-.empty-state {
-  text-align: center; font-size: 1.2em; color: #999;
-  padding: 40px 20px;
-}
-
-/* Swipe animation */
-.card-wrapper.swipe-left { animation: swipeLeft 0.3s forwards; }
-.card-wrapper.swipe-right { animation: swipeRight 0.3s forwards; }
-@keyframes swipeLeft {
-  to { transform: translateX(-120%) rotate(-10deg); opacity: 0; }
-}
-@keyframes swipeRight {
-  to { transform: translateX(120%) rotate(10deg); opacity: 0; }
-}
-
-/* Difficulty stars */
-.diff-stars {
-  text-align: center; font-size: 0.8em; margin: 2px 0;
-}
-
-
-/* Dynamic dino colors */
-.dino-svg { text-align: center; margin: 4px 0; line-height: 1; }
-.dino-svg svg { max-width: 65%; height: auto; }
-.card-wrapper[style] .card-front {
-  background: linear-gradient(160deg, var(--dino-lighter) 0%, var(--dino-light) 50%, var(--dino-color) 200%) !important;
-}
-.card-wrapper[style] .card-back {
-  background: linear-gradient(160deg, var(--dino-lighter) 0%, var(--dino-light) 100%) !important;
-}
-
-
-/* Cartoon dino */
-.dino-cartoon { 
-  text-align: center; margin: 8px 0; 
-  height: 140px; display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-}
-.dino-cartoon img {
-  max-height: 135px; max-width: 80%;
-  object-fit: contain;
-  filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.18));
-}
-.dino-cartoon svg {
-  width: 140px; height: 140px;
-  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
-}
-
-/* Confetti */
-.confetti {
-  position: fixed; pointer-events: none; z-index: 200;
-  font-size: 2em;
-  animation: confettiFall 1s forwards;
-}
-@keyframes confettiFall {
-  0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-  100% { opacity: 0; transform: translateY(100px) rotate(360deg) scale(0.5); }
-}
+.card-counter { font-size: 1.2em; font-weight: 800; color: #555; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-top">
-    <span class="app-title">🦕 恐龙闪卡 🦖</span>
-    <span class="progress-text" id="progressText">0/110</span>
-  </div>
+  <div class="app-title">🦕 恐龙闪卡 🦖</div>
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  <div class="filter-row">
-    <button class="era-btn active" data-era="all" onclick="setEra('all')">全部</button>
-    <button class="era-btn" data-era="triassic" onclick="setEra('triassic')">🌋三叠纪</button>
-    <button class="era-btn" data-era="jurassic" onclick="setEra('jurassic')">🌿侏罗纪</button>
-    <button class="era-btn" data-era="cretaceous" onclick="setEra('cretaceous')">🌍白垩纪</button>
-    <button class="diff-btn active" data-diff="all" onclick="setDiff('all')">全部</button>
-    <button class="diff-btn" data-diff="1" onclick="setDiff('1')">⭐</button>
-    <button class="diff-btn" data-diff="2" onclick="setDiff('2')">⭐⭐</button>
-    <button class="diff-btn" data-diff="3" onclick="setDiff('3')">⭐⭐⭐</button>
-  </div>
 </div>
 
 <div class="card-container" id="cardContainer"></div>
 
 <div class="nav-bar">
   <button class="nav-btn" id="prevBtn" onclick="prevCard()">⬅️</button>
-  <span class="card-counter" id="cardCounter">1 / 110</span>
+  <span class="card-counter" id="cardCounter">1 / 10</span>
   <button class="nav-btn" id="nextBtn" onclick="nextCard()">➡️</button>
 </div>
 
 <script>
-// ============ DINOSAUR DATA ============
 const DINOS = [
-// ---- 三叠纪 · 食肉 ----
-{id:1,name:`腔骨龙`,en:`Coelophysis`,emoji:`🦖`,sil:"raptor",color:"#d89236",img:`https://e7.pngegg.com/pngimages/789/711/png-clipart-herrerasaurus-staurikosaurus-eoraptor-lunensis-coelophysis-placerias-dinosaur-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食肉`,diff:2,size:`和一只大狗差不多大！比你高一点点哦～`,sound:`嘶嘶嘶～～！🐍💨`,fact:`腔骨龙是最早的恐龙之一！它的骨头是空心的，像吸管一样，所以跑起来特别特别快，比你骑小自行车还快呢！`,q:`腔骨龙的骨头是实心的还是空心的？`,opts:["实心的，像石头 🪨","空心的，像吸管 🥤"],ans:1,ansText:`空心的骨头让它变得又轻又快！`},
-{id:2,name:`埃雷拉龙`,en:`Herrerasaurus`,emoji:`🦖`,sil:"raptor",color:"#e5552d",img:`https://e7.pngegg.com/pngimages/118/574/png-clipart-stegosaurus-teratosaurus-diplodocus-herrerasaurus-dinosaur-cartoon-snake-white-mammal.png`,era:`triassic`,diet:`食肉`,diff:2,size:`有一辆小汽车那么长！`,sound:`嘎啊啊～～！🦖🔥`,fact:`埃雷拉龙是地球上最最最早的恐龙之一！它生活的时候，恐龙还是小不点，到处都是比它大的爬行动物在欺负它呢！`,q:`埃雷拉龙是恐龙家族里很早出生的，对不对？`,opts:["对 ✅","不对 ❌"],ans:0,ansText:`它是恐龙世界的老前辈！`},
-{id:3,name:`始盗龙`,en:`Eoraptor`,emoji:`🦖`,sil:"birdlike",color:"#c7f224",img:`https://e7.pngegg.com/pngimages/563/231/png-clipart-anchisaurus-gyposaurus-dilophosaurus-plateosaurus-sauropoda-dinosaur-tyrannosaurus-fauna-thumbnail.png`,era:`triassic`,diet:`杂食`,diff:3,size:`和小猫差不多大！只有你的膝盖那么高！`,sound:`吱吱吱～！🐭✨`,fact:`始盗龙的名字意思是"黎明的小偷"！它是最小的恐龙之一，像一只小猫咪在地上跑来跑去偷东西吃～它什么都吃，虫子、小蜥蜴、树叶都行！`,q:`始盗龙大还是小猫大？`,opts:["始盗龙大 🦖","差不多大 🐱"],ans:1,ansText:`它只有小猫那么大，好小好小！`},
-{id:4,name:`狗鳄龙`,en:`Cynognathus`,emoji:`🦖`,sil:"croc",color:"#cc6314",img:`https://e7.pngegg.com/pngimages/13/209/png-clipart-moschops-skeleton-permian-animal-tapinocephalia-reconstruction-mammal-carnivoran-thumbnail.png`,era:`triassic`,diet:`食肉`,diff:3,size:`像一只大狗那么大！`,sound:`汪嗷～～！🐕‍🦺💥`,fact:`等等！狗鳄龙其实不是恐龙，它是恐龙的"邻居"——一种像狗一样的爬行动物！它的名字意思就是"狗的下巴"，因为它的嘴巴真的很像狗狗！`,q:`狗鳄龙的嘴巴像什么动物？`,opts:["像猫 🐱","像狗 🐶"],ans:1,ansText:`它的嘴巴像狗狗的嘴巴！`},
-{id:5,name:`虚形龙`,en:`Coelurus`,emoji:`🦖`,sil:"raptor",color:"#d84d41",img:`https://e7.pngegg.com/pngimages/980/636/png-clipart-camptosaurus-ornithopod-stegosaurus-coelurus-genasauria-dinosaur-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食肉`,diff:2,size:`大约有你那么高！像一只火鸡！`,sound:`咕咕嘎！🐔💨`,fact:`虚形龙长得特别像一只大鸡！它用两条腿跑得飞快飞快，专门抓小虫子和蜥蜴吃，是恐龙里的"短跑冠军"！`,q:`虚形龙用几条腿跑步？`,opts:["两条腿 🦵🦵","四条腿 🦵🦵🦵🦵"],ans:0,ansText:`它像我们一样用两条腿跑！`},
-{id:6,name:`波斯特鳄`,en:`Postosuchus`,emoji:`🦖`,sil:"trex",color:"#e5a939",img:`https://e7.pngegg.com/pngimages/882/32/png-clipart-tyrannosaurus-tarbosaurus-theropods-acrocanthosaurus-velociraptor-tarbosaurus-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食肉`,diff:3,size:`像一辆小汽车那么长！比爸爸还高！`,sound:`吼嗷嗷！！🐊💥`,fact:`波斯特鳄不是恐龙，它是三叠纪的"大老板"！在恐龙还是小不点的时候，波斯特鳄才是最厉害的猎手！它用两条后腿走路，看起来像一只超级大鳄鱼站起来了！`,q:`在三叠纪，谁是最厉害的猎手？`,opts:["恐龙 🦖","波斯特鳄 🐊"],ans:1,ansText:`那时候恐龙还小，波斯特鳄才是大老板！`},
-{id:7,name:`理理恩龙`,en:`Liliensternus`,emoji:`🦖`,sil:"raptor",color:"#f26a30",img:`https://e7.pngegg.com/pngimages/1012/69/png-clipart-liliensternus-procompsognathus-cryolophosaurus-theropods-velociraptor-ring-tailed-lemur-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食肉`,diff:2,size:`有两个爸爸那么长！`,sound:`嘎嗷～～！🦖🌙`,fact:`理理恩龙是三叠纪最大的食肉恐龙之一！它跑起来像一阵风，专门在晚上偷偷出来抓猎物，是恐龙界的"夜行侠"！`,q:`理理恩龙喜欢白天还是晚上出来？`,opts:["白天 ☀️","晚上 🌙"],ans:1,ansText:`它喜欢在夜里偷偷行动！`},
-// ---- 三叠纪 · 食草 ----
-{id:8,name:`板龙`,en:`Plateosaurus`,emoji:`🦕`,sil:"sauropod",color:"#1e35cc",img:`https://e7.pngegg.com/pngimages/563/231/png-clipart-anchisaurus-gyposaurus-dilophosaurus-plateosaurus-sauropoda-dinosaur-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食草`,diff:2,size:`像一辆小卡车那么长！有两个爸爸叠起来那么高！`,sound:`嗯哞～～～！🦕🌿`,fact:`板龙是最早的大型恐龙！它可以用两条腿站起来够高高的树叶吃，就像你踮脚够桌上的饼干一样！它是后来那些超级大恐龙（比如腕龙）的老祖宗！`,q:`板龙吃树叶的时候会怎样？`,opts:["站起来够高处的叶子 🌳","趴在地上吃 ⬇️"],ans:0,ansText:`它会像你踮脚一样站起来够树叶！`},
-{id:9,name:`莫森龙`,en:`Mussaurus`,emoji:`🦕`,sil:"sauropod",color:"#15d8d4",img:`https://e7.pngegg.com/pngimages/908/541/png-clipart-cat-mussaurus-plateosaurus-dinosaur-sauropoda-cat-mammal-cat-like-mammal.png`,era:`triassic`,diet:`食草`,diff:3,size:`宝宝刚出生的时候只有你的手掌那么大！长大后有一辆车那么长！`,sound:`咪咪咪～！🐣🌱`,fact:`莫森龙的名字意思是"老鼠蜥蜴"！因为科学家最早发现的是它的宝宝化石，只有小老鼠那么大，太可爱了！但长大后它可是有一辆汽车那么大哦！`,q:`莫森龙宝宝有多大？`,opts:["像小老鼠一样小 🐭","像大象一样大 🐘"],ans:0,ansText:`宝宝莫森龙只有小老鼠那么大，萌萌的！`},
-{id:10,name:`吕勒龙`,en:`Riojasaurus`,emoji:`🦕`,sil:"sauropod",color:"#44e552",img:`https://e7.pngegg.com/pngimages/576/26/png-clipart-green-dinosaur-illustration-parksosaurus-hypsilophodon-triceratops-tenontosaurus-dinosaur-dinosaur-tyrannosaurus-fauna.png`,era:`triassic`,diet:`食草`,diff:3,size:`像一辆大面包车那么长！`,sound:`嗡嗡哞～～！🦕🍃`,fact:`吕勒龙有一个圆滚滚的大肚子！它需要大肚子来消化那些硬硬的植物。它的肚子里可能还有小石头帮忙磨碎食物呢，就像一个搅拌机！`,q:`吕勒龙肚子里有什么帮忙消化食物？`,opts:["小石头 🪨","小鱼 🐟"],ans:0,ansText:`小石头在肚子里帮忙把食物磨碎！`},
-{id:11,name:`黑水龙`,en:`Melanorosaurus`,emoji:`🦕`,sil:"sauropod",color:"#3c92f2",img:`https://e7.pngegg.com/pngimages/48/107/png-clipart-vertebrate-legendary-creature-others-legendary-creature-vertebrate-thumbnail.png`,era:`triassic`,diet:`食草`,diff:3,size:`像两辆小汽车连起来那么长！`,sound:`咚咚咚～～！🦕💪`,fact:`黑水龙的名字意思是"黑山蜥蜴"！它是三叠纪最大的恐龙之一，走路的时候地面都会"咚咚咚"地震动，就像巨人走路一样！`,q:`黑水龙走路的时候，地面会怎样？`,opts:["一点声音都没有 🤫","咚咚咚地震动 💥"],ans:1,ansText:`它太重了，走路地面都会抖！`},
-{id:12,name:`皮萨诺龙`,en:`Pisanosaurus`,emoji:`🦕`,sil:"raptor",color:"#28cc90",img:`https://e7.pngegg.com/pngimages/340/84/png-clipart-eoraptor-lunensis-velociraptor-eodromaeus-herrerasaurus-chindesaurus-dinosaur-monochrome-wildlife.png`,era:`triassic`,diet:`食草`,diff:2,size:`和一只小狗差不多大！`,sound:`吱呀吱呀～！🐕🌿`,fact:`皮萨诺龙可能是最早的鸟臀目恐龙！什么是鸟臀目？就是屁股像小鸟一样的恐龙！三角龙、剑龙都是它的后代哦！`,q:`皮萨诺龙的屁股像什么？`,opts:["像小鸟 🐦","像蜥蜴 🦎"],ans:0,ansText:`它的屁股像小鸟，所以叫"鸟臀目"！`},
-// ---- 三叠纪 · 杂食 ----
-{id:13,name:`灵鳄`,en:`Effigia`,emoji:`🦖`,sil:"croc",color:"#d87b20",img:`https://e7.pngegg.com/pngimages/145/1000/png-clipart-ornithomimosauria-limusaurus-ceratosaurus-ceratosauria-dinosaur-dinosaur-carnivoran-fauna.png`,era:`triassic`,diet:`杂食`,diff:3,size:`像一个大人那么长！`,sound:`嘎嘎咕～！🦜🌱`,fact:`灵鳄不是恐龙，它是鳄鱼的亲戚！但它看起来超级像恐龙，还用两条腿走路！这就好比猫和狗长得不像，但灵鳄和恐龙长得很像却不是一家人！`,q:`灵鳄是恐龙吗？`,opts:["是 🦖","不是 🐊"],ans:1,ansText:`它是鳄鱼的亲戚，只是长得像恐龙！`},
-{id:14,name:`鼠龙`,en:`Eodromaeus`,emoji:`🦖`,sil:"birdlike",color:"#dee516",img:`https://e7.pngegg.com/pngimages/710/653/png-clipart-eodromaeus-herrerasaurus-eoraptor-lunensis-alwalkeria-staurikosaurus-dinosaur-tyrannosaurus-terrestrial-animal.png`,era:`triassic`,diet:`杂食`,diff:3,size:`和一只猫差不多大！`,sound:`嗖嗖嗖～！🐱💨`,fact:`鼠龙的名字意思是"黎明奔跑者"！它只有猫咪那么大，但跑起来快得像闪电！它什么都吃——虫子、小蜥蜴、嫩叶子，一点都不挑食！`,q:`鼠龙挑食吗？`,opts:["超级挑食 😤","什么都吃 😋"],ans:1,ansText:`它什么都吃，一点都不挑！`},
-// ---- 侏罗纪 · 食肉 ----
-{id:15,name:`异特龙`,en:`Allosaurus`,emoji:`🦖`,sil:"trex",color:"#f27248",img:`https://e7.pngegg.com/pngimages/311/28/png-clipart-parasaurolophus-allosaurus-hadrosaurus-dinosaur-dinosaur-photography-poster.png`,era:`jurassic`,diet:`食肉`,diff:1,size:`像一辆大卡车那么长！有两个爸爸那么高！`,sound:`嗷嗷嗷！！！🦖🔥`,fact:`异特龙是侏罗纪的"霸王龙"！它的嘴巴可以张得超级大，像蛇一样把下巴"脱臼"来咬更大的东西！它还会组队打猎，一群异特龙一起去抓大恐龙！`,q:`异特龙喜欢一个人打猎还是大家一起？`,opts:["一个人 🦖","大家一起 🦖🦖🦖"],ans:1,ansText:`它们会组队一起抓猎物！`},
-{id:16,name:`角鼻龙`,en:`Ceratosaurus`,emoji:`🦖`,sil:"trex",color:"#ccaf33",img:`https://e7.pngegg.com/pngimages/806/912/png-clipart-dinosaur-king-triceratops-euoplocephalus-allosaurus-dinosaur-horse-mammal.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆小货车那么长！`,sound:`嘎嗷嗷！！🦏🔥`,fact:`角鼻龙的鼻子上有一个大角！像犀牛一样！但这个角不是用来打架的，科学家觉得它是用来"臭美"的——就像你戴了一顶漂亮的帽子！`,q:`角鼻龙鼻子上有什么？`,opts:["一朵花 🌸","一个角 🦏"],ans:1,ansText:`它鼻子上有一个帅帅的角！`},
-{id:17,name:`双冠龙`,en:`Dilophosaurus`,emoji:`🦖`,sil:"trex",color:"#d87b2b",img:`https://e7.pngegg.com/pngimages/282/448/png-clipart-xiongguanlong-tyrannosaurus-allosaurus-albertosaurus-zhuchengtyrannus-dinosaurs-watercolor-painting-png-material-thumbnail.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆面包车那么长！`,sound:`噗嘶嘶～～！🦖🌈`,fact:`双冠龙头上有两个漂亮的半圆形冠！像戴了两顶皇冠！电影里说它会喷毒液，但那是编的哦～真正的双冠龙不会喷毒，但它确实很酷！`,q:`双冠龙头上有几个冠？`,opts:["一个 ☝️","两个 ✌️"],ans:1,ansText:`两个冠，所以叫"双冠龙"！`},
-{id:18,name:`美扭椎龙`,en:`Eustreptospondylus`,emoji:`🦖`,sil:"raptor",color:"#e53822",img:`https://e7.pngegg.com/pngimages/291/692/png-clipart-eustreptospondylus-afrovenator-parasaurolophus-dinosaur-king-jurassic-world-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食肉`,diff:3,size:`有一个半爸爸那么长！`,sound:`嘎嘎嘎！🦖🌊`,fact:`美扭椎龙住在海边！它会在沙滩上捡被冲上来的鱼和死去的海洋动物吃，就像在海边捡贝壳一样，不过它捡的是食物！`,q:`美扭椎龙住在哪里？`,opts:["山上 ⛰️","海边 🏖️"],ans:1,ansText:`它喜欢住在海边捡好吃的！`},
-{id:19,name:`斑龙`,en:`Megalosaurus`,emoji:`🦖`,sil:"trex",color:"#f2ac18",img:`https://e7.pngegg.com/pngimages/191/783/png-clipart-teinurosaurus-reptile-dinosaur-cretaceous-megalosaurus-cretaceous-dinosaur-animals-tyrannosaurus.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆大面包车那么长！`,sound:`嗷呜嗷！！🦖📜`,fact:`斑龙是人类第一个发现并命名的恐龙！200多年前，人们挖到了它的骨头，一开始还以为是巨人的骨头呢！从此人类才知道世界上曾经有恐龙！`,q:`斑龙是第几个被发现的恐龙？`,opts:["第一个！🥇","第一百个 💯"],ans:0,ansText:`它是人类发现的第一种恐龙！`},
-{id:20,name:`蛮龙`,en:`Torvosaurus`,emoji:`🦖`,sil:"trex",color:"#cc6c3d",img:`https://e7.pngegg.com/pngimages/310/84/png-clipart-gojirasaurus-dilophosaurus-godzilla-dinosaurs-prehistoric-animals-dinosaur-s-dinosaur-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食肉`,diff:3,size:`像一辆公交车那么长！`,sound:`吼哇啊！！！🦖💀`,fact:`蛮龙的名字意思是"野蛮蜥蜴"！它是侏罗纪最大的食肉恐龙之一，比异特龙还要凶猛！它的爪子像弯弯的镰刀，一抓就能撕开猎物的皮肤！`,q:`蛮龙的爪子像什么？`,opts:["像勺子 🥄","像镰刀 🌙"],ans:1,ansText:`弯弯的爪子像镰刀一样锋利！`},
-{id:21,name:`冰脊龙`,en:`Cryolophosaurus`,emoji:`🦖`,sil:"trex",color:"#d8c836",img:`https://e7.pngegg.com/pngimages/565/606/png-clipart-transantarctic-mountains-cryolophosaurus-allosaurus-apatosaurus-glacialisaurus-dinosaur-hand-biology.png`,era:`jurassic`,diet:`食肉`,diff:3,size:`有两个爸爸那么长！`,sound:`嗖嗷嗷！❄️🦖`,fact:`冰脊龙住在南极洲！没错，南极！不过那时候南极还不冷，有很多树和植物。它头上有一个像卷发一样的冠，科学家给它起了个外号叫"猫王龙"！`,q:`冰脊龙住在哪里？`,opts:["非洲 🌍","南极洲 🧊"],ans:1,ansText:`它住在南极洲，但那时候南极不冷哦！`},
-{id:22,name:`嗜鸟龙`,en:`Ornitholestes`,emoji:`🦖`,sil:"birdlike",color:"#e5922d",img:`https://e7.pngegg.com/pngimages/39/293/png-clipart-velociraptor-infant-cartoon-child-child-child-baby.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`和一只大火鸡差不多大！`,sound:`叽叽嘎！🐦💨`,fact:`嗜鸟龙的名字意思是"抓鸟的小偷"！它个子小小的，但手指特别灵活，专门偷偷摸摸地去抓小蜥蜴和虫子吃。它可能还长着羽毛呢！`,q:`嗜鸟龙身上可能有什么？`,opts:["鳞片 🐍","羽毛 🪶"],ans:1,ansText:`它可能长着软软的羽毛！`},
-{id:23,name:`气龙`,en:`Gasosaurus`,emoji:`🦖`,sil:"raptor",color:"#f24c24",img:`https://e7.pngegg.com/pngimages/141/66/png-clipart-gasosaurus-coelophysis-carcharodontosaurus-theropods-dinosaur-dinosaur-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食肉`,diff:3,size:`像一辆小汽车那么长！`,sound:`噗噗嗷！💨🦖`,fact:`气龙的名字听起来像"放屁龙"，但其实它是在一个天然气公司挖地的时候被发现的，所以用"气"来命名！不过小朋友都喜欢叫它"放屁龙"，哈哈！它是在中国发现的哦！`,q:`气龙是在哪个国家发现的？`,opts:["美国 🇺🇸","中国 🇨🇳"],ans:1,ansText:`气龙是在中国被发现的！`},
-{id:24,name:`永川龙`,en:`Yangchuanosaurus`,emoji:`🦖`,sil:"trex",color:"#cca014",img:`https://e7.pngegg.com/pngimages/61/618/png-clipart-yangchuanosaurus-tyrannosaurus-metriacanthosaurus-allosaurus-spinosaurus-wild-dinosaur-animals-fauna.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆大面包车那么长！比爸爸高很多！`,sound:`吼嗷嗷！！🦖🇨🇳`,fact:`永川龙是中国的"异特龙"！它是在重庆永川发现的，是侏罗纪中国最大的食肉恐龙！它的头上有凹凸不平的角，看起来很威风！`,q:`永川龙是在中国的哪个城市附近发现的？`,opts:["北京 🏛️","重庆 🌶️"],ans:1,ansText:`在重庆永川发现的，所以叫永川龙！`},
-// ---- 侏罗纪 · 食草 ----
-{id:25,name:`腕龙`,en:`Brachiosaurus`,emoji:`🦕`,sil:"sauropod",color:"#41d8ae",img:`https://e7.pngegg.com/pngimages/885/1016/png-clipart-brontosaurus-brachiosaurus-cartoon-dinosaur-plant-stem-reptile.png`,era:`jurassic`,diet:`食草`,diff:1,size:`像4层楼那么高！有3辆公交车连起来那么长！`,sound:`嗡嗡哞～～～～！🦕🌲`,fact:`腕龙的鼻孔长在头顶上！以前科学家以为它可以像潜水艇一样把身体泡在水里，只露出鼻孔呼吸，但其实水压会把它的肺压扁！它的前腿比后腿长，所以走路像在走上坡！`,q:`腕龙的鼻孔长在哪里？`,opts:["嘴巴前面 👃","头顶上 🎩"],ans:1,ansText:`它的鼻孔长在头顶上，很特别吧！`},
-{id:26,name:`梁龙`,en:`Diplodocus`,emoji:`🦕`,sil:"sauropod",color:"#57e539",img:`https://e7.pngegg.com/pngimages/865/352/png-clipart-battle-of-giants-dinosaurs-diplodocus-illustration-cartoon-dinosaur-cartoon-character-purple.png`,era:`jurassic`,diet:`食草`,diff:1,size:`像3辆公交车连起来那么长！但脖子和尾巴占了大部分！`,sound:`呜嗡嗡～～～！🦕💨`,fact:`梁龙的尾巴可以像鞭子一样甩！甩起来的速度超过声速，会发出"啪！"的巨响，比打雷还响！它用尾巴鞭子吓跑想吃它的恐龙！`,q:`梁龙的尾巴像什么？`,opts:["像鞭子 💥","像棒棒糖 🍭"],ans:0,ansText:`它的尾巴甩起来像鞭子一样响！`},
-{id:27,name:`剑龙`,en:`Stegosaurus`,emoji:`🦕`,sil:"stego",color:"#30bef2",img:`https://e7.pngegg.com/pngimages/792/498/png-clipart-triceratops-stegosaurus-dinosaur-cartoon-dinosaur-collection-cartoon-character-blue.png`,era:`jurassic`,diet:`食草`,diff:1,size:`像一辆公交车那么长！背上有好多三角形的板子！`,sound:`哼哼嗯～～！🦕🔶`,fact:`剑龙的脑子只有核桃那么大！它那么大的身体配一个核桃大小的脑袋，是恐龙里脑子最小的之一！但它尾巴上的4根大刺可厉害了！`,q:`剑龙的脑子有多大？`,opts:["像西瓜 🍉","像核桃 🥜"],ans:1,ansText:`只有核桃那么大，好小好小！`},
-{id:28,name:`雷龙`,en:`Apatosaurus`,emoji:`🦕`,sil:"sauropod",color:"#1ecc60",img:`https://e7.pngegg.com/pngimages/555/778/png-clipart-apatosaurus-dinosaur-cartoon-dinosaur-animals-photography.png`,era:`jurassic`,diet:`食草`,diff:1,size:`像两辆公交车那么长！重得像4头大象！`,sound:`咚嗡嗡～～～！🦕⚡`,fact:`雷龙走路的时候地面会"咚咚咚"像打雷一样响，所以叫"雷龙"！它曾经被"取消"过——科学家说它和迷惑龙是同一种恐龙，但后来又发现它们不一样，雷龙又"复活"了！`,q:`雷龙为什么叫雷龙？`,opts:["因为它怕打雷 ⚡😱","因为走路像打雷一样响 ⚡💥"],ans:1,ansText:`它太重了，走路声音像打雷！`},
-{id:29,name:`圆顶龙`,en:`Camarasaurus`,emoji:`🦕`,sil:"sauropod",color:"#1538d8",img:`https://e7.pngegg.com/pngimages/925/447/png-clipart-dinosaur-museum-triceratops-camarasaurus-velociraptor-smiling-dinosaur-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食草`,diff:2,size:`像一辆半公交车那么长！`,sound:`嗡嗯嗯～！🦕🏠`,fact:`圆顶龙的头骨里有很多空洞，像一栋有很多房间的房子！这些空洞让它的大脑袋变得很轻。它是侏罗纪最常见的蜥脚类恐龙！`,q:`圆顶龙的头骨里有什么？`,opts:["都是实心的 🧱","有很多空洞 🕳️"],ans:1,ansText:`很多空洞让脑袋变轻了！`},
-{id:30,name:`马门溪龙`,en:`Mamenchisaurus`,emoji:`🦕`,sil:"sauropod",color:"#44e5da",img:`https://e7.pngegg.com/pngimages/295/302/png-clipart-brown-raptor-illustration-velociraptor-utahraptor-tarchia-dilong-mamenchisaurus-cartoon-dinosaurs-cartoon-character-png-material.png`,era:`jurassic`,diet:`食草`,diff:2,size:`脖子就有半辆公交车那么长！全身像3辆公交车！`,sound:`嗡呼呼～～～！🦕🇨🇳`,fact:`马门溪龙有全世界最长的脖子！它的脖子有19节骨头（你的脖子只有7节），占了身体长度的一半！这是在中国四川发现的恐龙！`,q:`谁的脖子更长？`,opts:["长颈鹿 🦒","马门溪龙 🦕"],ans:1,ansText:`马门溪龙的脖子比长颈鹿长好几倍！`},
-{id:31,name:`钉背龙`,en:`Kentrosaurus`,emoji:`🦕`,sil:"stego",color:"#3cf243",img:`https://e7.pngegg.com/pngimages/386/978/png-clipart-ark-survival-evolved-baryonyx-yutyrannus-the-new-dinosaurs-kentrosaurus-ark-of-the-covenant-mammal-carnivoran.png`,era:`jurassic`,diet:`食草`,diff:2,size:`像一辆小汽车那么长！`,sound:`哼哼嗷！🦔💥`,fact:`钉背龙是剑龙的"刺猬版"表亲！它的背上不光有板子，还有好多好多长刺！从肩膀一直到尾巴都是刺，像一个移动的仙人掌！`,q:`钉背龙身上有什么？`,opts:["很多刺 🌵","很多花 🌸"],ans:0,ansText:`全身都是刺，像仙人掌！`},
-{id:32,name:`沱江龙`,en:`Tuojiangosaurus`,emoji:`🦕`,sil:"stego",color:"#287dcc",img:`https://e7.pngegg.com/pngimages/752/932/png-clipart-euoplocephalus-ankylosaurus-styracosaurus-diplodocus-tuojiangosaurus-dinosaur-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食草`,diff:3,size:`像一辆大面包车那么长！`,sound:`嗯哼嗯！🦕🇨🇳`,fact:`沱江龙是在中国四川的沱江边上发现的！它是中国发现的第一种完整的剑龙类恐龙。它背上有15对尖尖的板子，尾巴上还有4根大刺！`,q:`沱江龙是在哪条江边发现的？`,opts:["长江 🌊","沱江 🏞️"],ans:1,ansText:`在四川的沱江边发现的！`},
-{id:33,name:`叉背龙`,en:`Dicraeosaurus`,emoji:`🦕`,sil:"sauropod",color:"#20d88c",img:`https://e7.pngegg.com/pngimages/749/571/png-clipart-lambeosaurus-dicraeosaurus-plateosaurus-corythosaurus-stegosaurus-dinosaurs-tyrannosaurus-fauna.png`,era:`jurassic`,diet:`食草`,diff:2,size:`像一辆大面包车那么长！脖子很短！`,sound:`嗡嗡嗡～！🦕🌿`,fact:`叉背龙的背上有一排像叉子一样的骨刺！和其他长脖子恐龙不同，它的脖子特别短，因为它不需要吃高处的叶子，只吃矮矮的植物就够了！`,q:`叉背龙的脖子长不长？`,opts:["超级长 📏","很短 ✂️"],ans:1,ansText:`它的脖子很短，只吃矮矮的植物！`},
-{id:34,name:`巨脚龙`,en:`Barapasaurus`,emoji:`🦕`,sil:"sauropod",color:"#55e516",img:`https://e7.pngegg.com/pngimages/560/905/png-clipart-velociraptor-line-art-animal-cartoon-others-white-monochrome-thumbnail.png`,era:`jurassic`,diet:`食草`,diff:3,size:`像两辆公交车那么长！`,sound:`咚咚嗡～！🦕🦶`,fact:`巨脚龙的名字在印度语里意思是"大脚蜥蜴"！它的一只脚就有你的小书桌那么大！它是最早的大型蜥脚类恐龙之一，在印度被发现的！`,q:`巨脚龙的脚有多大？`,opts:["像你的手 ✋","像小书桌 📚"],ans:1,ansText:`它的脚有小书桌那么大！`},
-{id:35,name:`舒龙`,en:`Shunosaurus`,emoji:`🦕`,sil:"sauropod",color:"#48daf2",img:`https://e7.pngegg.com/pngimages/1000/470/png-clipart-dinosaur-king-parasaurolophus-tyrannosaurus-spinosaurus-dinosaur-marine-mammal-mammal.png`,era:`jurassic`,diet:`食草`,diff:2,size:`像一辆公交车那么长！`,sound:`嗡砰砰！🦕🔨`,fact:`舒龙的尾巴末端有一个骨头做的"大锤子"！它是唯一一种尾巴上有锤子的蜥脚类恐龙！它也是在中国四川发现的！`,q:`舒龙尾巴上有什么？`,opts:["一把扇子 🪭","一个大锤子 🔨"],ans:1,ansText:`一个骨头做的大锤子！`},
-{id:36,name:`峨眉龙`,en:`Omeisaurus`,emoji:`🦕`,sil:"sauropod",color:"#33cc58",img:`https://e7.pngegg.com/pngimages/314/526/png-clipart-vulcanodon-omeisaurus-sauropoda-dinosaur-chordata-dinosaur-mammal-hand.png`,era:`jurassic`,diet:`食草`,diff:3,size:`像两辆公交车连起来那么长！`,sound:`嗡嗡哞嗡～！🦕⛰️`,fact:`峨眉龙是在中国四川峨眉山附近发现的！它有一条超长的脖子，可以像起重机一样够到很高很高的树叶！`,q:`峨眉龙是在哪座山附近发现的？`,opts:["泰山 ⛰️","峨眉山 🏔️"],ans:1,ansText:`在美丽的峨眉山附近！`},
-// ---- 侏罗纪 · 杂食 ----
-{id:37,name:`嗜鸟龙`,en:`Ornitholestes`,emoji:`🦖`,sil:"birdlike",color:"#b2d82b",img:`https://e7.pngegg.com/pngimages/39/293/png-clipart-velociraptor-infant-cartoon-child-child-child-baby.png`,era:`jurassic`,diet:`杂食`,diff:2,size:`像一只大火鸡那么大！`,sound:`嘎嘎嘎～！🐔🌿`,fact:`嗜鸟龙什么都吃！虫子、小蜥蜴、蛋、嫩叶子......它是侏罗纪的"吃货"！它的手指特别灵活，可以像我们一样抓住很小的东西！`,q:`嗜鸟龙挑不挑食？`,opts:["什么都吃 😋","只吃肉 🍖"],ans:0,ansText:`它是个什么都吃的小吃货！`},
-{id:38,name:`树息龙`,en:`Epidexipteryx`,emoji:`🦖`,sil:"birdlike",color:"#e5cf22",img:`https://e7.pngegg.com/pngimages/115/376/png-clipart-crocodile-velociraptor-masiakasaurus-spinosaurus-deinonychus-crocodile-animals-tyrannosaurus.png`,era:`jurassic`,diet:`杂食`,diff:3,size:`只有鸽子那么大！`,sound:`啾啾啾～！🐦✨`,fact:`树息龙的尾巴上有4根超长的羽毛，像孔雀一样漂亮！但它不会飞，这些羽毛是用来"炫耀"的！它只有鸽子那么大，是最小的恐龙之一！`,q:`树息龙尾巴上的长羽毛是干什么用的？`,opts:["用来飞 ✈️","用来臭美 💅"],ans:1,ansText:`那些漂亮羽毛是用来炫耀的！`},
-// ---- 白垩纪 · 食肉 ----
-{id:39,name:`霸王龙`,en:`Tyrannosaurus Rex`,emoji:`🦖`,sil:"trex",color:"#f22c18",img:`https://e7.pngegg.com/pngimages/850/234/png-clipart-tyrannosaurus-velociraptor-dinosaur-cartoon-dinosaur-dinosaur-vector-stock-photography.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`像一辆公交车那么长！有4个爸爸叠起来那么高！`,sound:`嗷呜～～～！！！🦖💥`,fact:`霸王龙的咬合力是所有陆地动物里最强的！它一口可以咬碎汽车！而且最新研究发现，霸王龙小时候身上可能有羽毛，毛茸茸的像小鸡！`,q:`霸王龙小时候身上可能有什么？`,opts:["鳞片 🐍","羽毛 🐤"],ans:1,ansText:`小霸王龙可能毛茸茸的像小鸡！`},
-{id:40,name:`迅猛龙`,en:`Velociraptor`,emoji:`🦖`,sil:"raptor",color:"#cc9b3d",img:`https://e7.pngegg.com/pngimages/109/957/png-clipart-velociraptor-troodon-dinosaur-drawing-cute-dinosaur-child-face-thumbnail.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`只有一只大火鸡那么大！不是电影里那么大哦！`,sound:`嘶嘶嘎！！🦖🪶`,fact:`电影里的迅猛龙有人那么高，但真正的迅猛龙只有火鸡那么大！而且全身长满羽毛，像一只长着牙齿的大鸟！`,q:`真正的迅猛龙有多大？`,opts:["像火鸡一样 🦃","像大象一样 🐘"],ans:0,ansText:`真正的迅猛龙只有火鸡那么大！`},
-{id:41,name:`棘龙`,en:`Spinosaurus`,emoji:`🦖`,sil:"spino",color:"#d86836",img:`https://e7.pngegg.com/pngimages/906/401/png-clipart-tyrannosaurus-dinosaur-spinosaurus-cartoon-cartoon-dinosaur-cartoon-character-animals.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`比霸王龙还长！像一辆半公交车！背上有一个大帆！`,sound:`嗷哗哗～～！🦖🐟`,fact:`棘龙是唯一会游泳的大型食肉恐龙！它的尾巴扁扁的像船桨，可以在水里划水！它主要吃鱼，嘴巴像鳄鱼一样长长的！`,q:`棘龙最爱吃什么？`,opts:["吃鱼 🐟","吃草 🌿"],ans:0,ansText:`它最爱在水里抓鱼吃！`},
-{id:42,name:`恐爪龙`,en:`Deinonychus`,emoji:`🦖`,sil:"raptor",color:"#e5cf2d",img:`https://e7.pngegg.com/pngimages/391/103/png-clipart-dinosaur-deinonychus-velociraptor-stegosaurus-allosaurus-cretaceous-dinosaur-tyrannosaurus-fauna.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`有一个大人那么长！比你高一些！`,sound:`嘎嘶嘶！！🦖🗡️`,fact:`恐爪龙的名字意思是"恐怖的爪子"！它每只脚上都有一个超大的弯爪子，平时缩起来走路，打猎的时候才像弹簧刀一样弹出来！`,q:`恐爪龙的大爪子平时怎么放？`,opts:["一直伸出来 ✋","缩起来走路 ✊"],ans:1,ansText:`平时缩起来，打猎才弹出来！`},
-{id:43,name:`南方巨兽龙`,en:`Giganotosaurus`,emoji:`🦖`,sil:"trex",color:"#f29024",img:`https://e7.pngegg.com/pngimages/365/816/png-clipart-green-and-orange-dinosaur-illustration-dinosaur-triceratops-giganotosaurus-stegosaurus-painted-cartoon-dinosaur-watercolor-painting-cartoon-character.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`比霸王龙还要长一点！像一辆大公交车！`,sound:`吼嗷嗷嗷！！！🦖🌋`,fact:`南方巨兽龙比霸王龙的身体更长，但脑子只有香蕉那么大！它用锋利的牙齿像刀子一样切割猎物！`,q:`谁的脑子更大？`,opts:["南方巨兽龙 🦖","霸王龙 🦖"],ans:1,ansText:`霸王龙的脑子比南方巨兽龙大多了！`},
-{id:44,name:`食肉牛龙`,en:`Carnotaurus`,emoji:`🦖`,sil:"trex",color:"#cc3414",img:`https://e7.pngegg.com/pngimages/547/762/png-clipart-tyrannosaurus-rex-carnotaurus-triceratops-dinosaur-colored-cartoon-dinosaur-cartoon-character-color-splash.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一辆面包车那么长！头上有两个小角！`,sound:`哞嗷嗷！！🐂🦖`,fact:`食肉牛龙头上有两个像牛一样的角！它的手臂比霸王龙的还要小还要短！但它跑起来超级快，是大型食肉恐龙里的"飞毛腿"！`,q:`食肉牛龙头上有什么？`,opts:["两个角 🐂","一顶帽子 🎩"],ans:0,ansText:`两个像牛一样的角！`},
-{id:45,name:`鲨齿龙`,en:`Carcharodontosaurus`,emoji:`🦖`,sil:"trex",color:"#d8b141",img:`https://e7.pngegg.com/pngimages/367/178/png-clipart-brown-dinosaur-tyrannosaurus-dinosaur-euclidean-dinosaur-antler-fauna.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`和霸王龙差不多大！像一辆公交车！`,sound:`嘎嗷嗷！！🦈🦖`,fact:`鲨齿龙的名字意思是"有鲨鱼牙齿的蜥蜴"！它的牙齿边上有锯齿，像鲨鱼的牙齿一样锋利！`,q:`鲨齿龙的牙齿像什么动物？`,opts:["像兔子 🐰","像鲨鱼 🦈"],ans:1,ansText:`它的牙齿像鲨鱼一样锋利！`},
-{id:46,name:`犹他盗龙`,en:`Utahraptor`,emoji:`🦖`,sil:"raptor",color:"#e57d39",img:`https://e7.pngegg.com/pngimages/204/265/png-clipart-velociraptor-tyrannosaurus-utahraptor-dinosaur-spinosaurus-t-rex-chibi-tyrannosaurus-thumbnail.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一辆小汽车那么长！比爸爸还高！`,sound:`嘎嗷嘶！！🦖🗡️`,fact:`犹他盗龙是迅猛龙的"超级放大版"！如果迅猛龙是小猫，犹他盗龙就是老虎！它脚上的大弯爪有你的脸那么长！`,q:`犹他盗龙和迅猛龙，谁更大？`,opts:["迅猛龙 🦃","犹他盗龙 🐯"],ans:1,ansText:`犹他盗龙比迅猛龙大好多倍！`},
-{id:47,name:`特暴龙`,en:`Tarbosaurus`,emoji:`🦖`,sil:"trex",color:"#f23830",img:`https://e7.pngegg.com/pngimages/798/67/png-clipart-tyrannosaurus-triceratops-stegosaurus-spinosaurus-velociraptor-dinosaur-jurassic-dinosaur-egg.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`和霸王龙差不多大！像一辆公交车！`,sound:`嗷吼吼！！🦖🏜️`,fact:`特暴龙是亚洲版的霸王龙！它住在蒙古的大沙漠里（那时候是一片森林）。它和霸王龙长得超像！`,q:`特暴龙住在哪里？`,opts:["美国 🇺🇸","亚洲（蒙古）🏜️"],ans:1,ansText:`它住在亚洲的蒙古！`},
-{id:48,name:`重爪龙`,en:`Baryonyx`,emoji:`🦖`,sil:"spino",color:"#cc881e",img:`https://e7.pngegg.com/pngimages/370/489/png-clipart-triceratops-carnotaurus-styracosaurus-reptile-tyrannosaurus-rex-horned-dinosaur-blue-tyrannosaurus.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一辆面包车那么长！嘴巴长长的像鳄鱼！`,sound:`嘎哗哗～！🐊🐟`,fact:`重爪龙的名字意思是"重重的爪子"！它有一个超级大的弯爪子，用来像熊抓三文鱼一样在河里抓鱼！`,q:`重爪龙用什么抓鱼？`,opts:["嘴巴 👄","大爪子 🐻"],ans:1,ansText:`它用大爪子像熊一样抓鱼！`},
-{id:49,name:`阿贝力龙`,en:`Abelisaurus`,emoji:`🦖`,sil:"trex",color:"#d84815",img:`https://e7.pngegg.com/pngimages/149/261/png-clipart-tyrannosaurus-ceratosaurus-monolophosaurus-velociraptor-abelisaurus-dinosaur-photography-fauna-thumbnail.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一辆大面包车那么长！`,sound:`嗷嘎嘎！！🦖🌎`,fact:`阿贝力龙生活在南美洲！它的手臂超级超级短！科学家到现在也只找到了它的头骨，身体其他部分还没找到呢！`,q:`科学家找到了阿贝力龙的全身骨头吗？`,opts:["找到了 ✅","只找到了头 💀"],ans:1,ansText:`到现在只找到了头骨！`},
-{id:50,name:`玛君颅龙`,en:`Majungasaurus`,emoji:`🦖`,sil:"trex",color:"#e5c944",img:`https://e7.pngegg.com/pngimages/225/918/png-clipart-tyrannosaurus-ceratosaurus-jurassic-world-evolution-velociraptor-majungasaurus-jurassic-world-fallen-kingdom-baryonyx-carnivoran-tyrannosaurus.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一辆面包车那么长！`,sound:`嗷嘎嘎嘎！🦖💀`,fact:`玛君颅龙住在马达加斯加岛上！它头上有一个凸起的"独角"。最让科学家惊讶的是，它可能会吃同类！`,q:`玛君颅龙住在哪个岛上？`,opts:["海南岛 🏝️","马达加斯加岛 🦎"],ans:1,ansText:`在遥远的马达加斯加岛上！`},
-{id:51,name:`似鳄龙`,en:`Suchomimus`,emoji:`🦖`,sil:"spino",color:"#f2933c",img:`https://e7.pngegg.com/pngimages/336/915/png-clipart-spinosaurus-yangchuanosaurus-tyrannosaurus-metriacanthosaurus-oxfordian-dinosaur-fauna-jurassic.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一辆大面包车那么长！嘴巴像鳄鱼！`,sound:`嘎嘎哗～！🐊🐟`,fact:`似鳄龙的名字意思是"像鳄鱼的模仿者"！它的嘴巴又长又窄，有100多颗牙齿，全都是用来夹住滑溜溜的鱼！`,q:`似鳄龙有多少颗牙齿？`,opts:["10颗 😬","100多颗 😱"],ans:1,ansText:`100多颗牙齿抓鱼用的！`},
-{id:52,name:`奥沙拉龙`,en:`Oxalaia`,emoji:`🦖`,sil:"spino",color:"#cc3d28",img:`https://e7.pngegg.com/pngimages/574/1016/png-clipart-tyrannosaurus-tarbosaurus-spinosaurus-carnotaurus-giganotosaurus-dinosaur-orange-tyrannosaurus.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`比霸王龙还长！像一辆大公交车！`,sound:`嗷哗哗哗！🦖🇧🇷`,fact:`奥沙拉龙是在巴西发现的！它是棘龙的亲戚，也是南美洲最大的食肉恐龙之一！`,q:`奥沙拉龙是在哪个国家发现的？`,opts:["日本 🇯🇵","巴西 🇧🇷"],ans:1,ansText:`在南美洲的巴西！`},
-{id:53,name:`伶盗龙`,en:`Velociraptor`,emoji:`🦖`,sil:"raptor",color:"#d8a020",img:`https://e7.pngegg.com/pngimages/109/957/png-clipart-velociraptor-troodon-dinosaur-drawing-cute-dinosaur-child-face-thumbnail.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一只火鸡那么大，但更修长！`,sound:`嘶嘎嘎嘎！🦖🏜️`,fact:`有一块著名的化石叫"搏斗化石"——一只伶盗龙和一只原角龙抱在一起打架的化石！它们在打架的时候被突然坍塌的沙丘埋住了！`,q:`"搏斗化石"里，伶盗龙在和谁打架？`,opts:["霸王龙 🦖","原角龙 🦏"],ans:1,ansText:`它在和原角龙打架！`},
-{id:54,name:`驰龙`,en:`Dromaeosaurus`,emoji:`🦖`,sil:"raptor",color:"#e55d16",img:`https://e7.pngegg.com/pngimages/533/343/png-clipart-styracosaurus-tyrannosaurus-ornithomimus-dinosaur-ceratopsia-cretaceous-dinosaur-fauna-terrestrial-animal.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一只中等大小的狗那么大！`,sound:`嘶嘎嗷！🦖💨`,fact:`驰龙给了一整个恐龙家族命名——"驰龙科"！迅猛龙、恐爪龙都属于这个家族。驰龙虽然小，但它的下巴咬合力出奇的强！`,q:`驰龙科还包括谁？`,opts:["迅猛龙 🦖","腕龙 🦕"],ans:0,ansText:`迅猛龙和驰龙是一家人！`},
-{id:55,name:`阿尔伯塔龙`,en:`Albertosaurus`,emoji:`🦖`,sil:"trex",color:"#f2e248",img:`https://e7.pngegg.com/pngimages/774/462/png-clipart-tyrannosaurus-velociraptor-line-art-dinosaur-triceratops-dinosaur-white-mammal.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`比霸王龙小一点，像一辆大面包车！`,sound:`嗷嘎嗷！🦖🇨🇦`,fact:`阿尔伯塔龙是霸王龙的"表哥"！科学家发现了20多只阿尔伯塔龙的化石在一起——说明它们可能是成群结队打猎的！`,q:`阿尔伯塔龙喜欢一个人还是一群一起行动？`,opts:["一个人 🦖","一群一起 🦖🦖🦖"],ans:1,ansText:`它们可能是群体行动的！`},
-{id:56,name:`恐手龙`,en:`Deinocheirus`,emoji:`🦖`,sil:"therizo",color:"#cccb33",img:`https://e7.pngegg.com/pngimages/701/426/png-clipart-spinosaurus-tyrannosaurus-triceratops-dinosaur-deinocheirus-t-rex-tyrannosaurus-fauna.png`,era:`cretaceous`,diet:`杂食`,diff:3,size:`像一辆大面包车！手臂有一个爸爸那么长！`,sound:`嗷嘎嗯～！🦖🤲`,fact:`恐手龙的名字意思是"恐怖的手"！它的手臂有2.4米长，是恐龙界最长的手臂！一开始科学家只找到了两只巨大的手，花了50年才找到完整的身体！`,q:`恐手龙的手臂有多长？`,opts:["和你的手臂一样长 💪","有一个爸爸那么长 🧍"],ans:1,ansText:`它的手臂有一个大人那么长！`},
-// ---- 白垩纪 · 食草 ----
-{id:57,name:`三角龙`,en:`Triceratops`,emoji:`🦕`,sil:"ceratops",color:"#2bd84d",img:`https://e7.pngegg.com/pngimages/351/603/png-clipart-dinosaur-triceratops-animaatio-drawing-cartoon-dinosaur-tyrannosaurus-grass.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆大吉普车那么大！有3个大角！`,sound:`哼嗯嗯～～！🦏💥`,fact:`三角龙的头占了整个身体的三分之一！它的头盾不是实心的，里面有很多血管，可能可以变颜色！生气的时候头盾变红！`,q:`三角龙有几个角？`,opts:["两个 ✌️","三个 🤟"],ans:1,ansText:`三个角：鼻子上一个，眉毛上面两个！`},
-{id:58,name:`甲龙`,en:`Ankylosaurus`,emoji:`🦕`,sil:"ankylo",color:"#2268e5",img:`https://e7.pngegg.com/pngimages/778/388/png-clipart-tyrannosaurus-triceratops-ankylosaurus-dinosaur-dinosaur-cartoon-mural.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆坦克那么大！全身都是铠甲！`,sound:`哐哐砰！！🛡️💥`,fact:`甲龙全身穿着骨头做的铠甲，连眼皮上都有骨头保护！它尾巴上有一个大骨锤，一锤下去可以把霸王龙的腿打断！`,q:`甲龙尾巴上有什么武器？`,opts:["大钉子 📌","大骨锤 🔨"],ans:1,ansText:`一个超级大的骨头锤子！`},
-{id:59,name:`副栉龙`,en:`Parasaurolophus`,emoji:`🦕`,sil:"hadro",color:"#18f2bb",img:`https://e7.pngegg.com/pngimages/105/325/png-clipart-parasaurolophus-volcano-dinosaur-illustration-cartoon-volcano-cartoon-character-leaf.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆小货车那么长！头上有一个长长的管子！`,sound:`呜嗡嗡嗡～～～！🎺🦕`,fact:`副栉龙头上那个长长的管子是空心的，连着鼻子！它可以用这个管子吹出低沉的声音，像一个大号！`,q:`副栉龙头上的管子可以做什么？`,opts:["喝水 🥤","吹出声音 🎺"],ans:1,ansText:`它可以用管子吹出声音来聊天！`},
-{id:60,name:`厚头龙`,en:`Pachycephalosaurus`,emoji:`🦕`,sil:"hadro",color:"#51cc3d",img:`https://e7.pngegg.com/pngimages/680/43/png-clipart-triceratops-illustration-triceratops-dinosaurs-dinosaurs-pachycephalosaurus-cretaceous-dinosaur-animals-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`有两个爸爸那么长！头顶超级硬！`,sound:`砰砰砰！！！💥🤕`,fact:`厚头龙的头顶有25厘米厚的骨头！像戴了一顶超级厚的安全帽！`,q:`厚头龙的头顶硬不硬？`,opts:["像棉花一样软 ☁️","像石头一样硬 🪨"],ans:1,ansText:`超级硬，有25厘米厚！`},
-{id:61,name:`鸭嘴龙`,en:`Hadrosaurus`,emoji:`🦕`,sil:"hadro",color:"#36a7d8",img:`https://e7.pngegg.com/pngimages/129/174/png-clipart-maiasaura-late-cretaceous-dinosaur-size-bird-velociraptor-dinosaur-painted-hand-thumbnail.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆面包车那么长！嘴巴像鸭子！`,sound:`嘎嘎嘎～～！🦆🌿`,fact:`鸭嘴龙的嘴巴前面像鸭子，但后面有上千颗小牙齿排成好多排！旧牙齿掉了新牙齿马上长出来，一辈子能换几千颗牙！`,q:`鸭嘴龙一辈子能换多少颗牙？`,opts:["20颗 😬","几千颗 😱"],ans:1,ansText:`几千颗！它永远不用担心牙齿坏掉！`},
-{id:62,name:`禽龙`,en:`Iguanodon`,emoji:`🦕`,sil:"hadro",color:"#2de578",img:`https://e7.pngegg.com/pngimages/113/244/png-clipart-dinosaur-triceratops-stegosaurus-apatosaurus-iguanodon-dinosaurs-child-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆大面包车那么长！大拇指是个大尖钉！`,sound:`嗯嗷嗯～！🦕👍`,fact:`禽龙的大拇指是一个大大的尖刺！以前科学家把这个尖刺安到了鼻子上，以为它是角！后来才发现应该在手上！`,q:`禽龙大拇指上有什么？`,opts:["一个指甲 💅","一个大尖刺 📌"],ans:1,ansText:`一个像匕首一样的大尖刺！`},
-{id:63,name:`多刺甲龙`,en:`Polacanthus`,emoji:`🦕`,sil:"ankylo",color:"#2443f2",img:`https://e7.pngegg.com/pngimages/606/931/png-clipart-ankylosaurus-triceratops-stegosaurus-allosaurus-spinosaurus-dinosaur-animals-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆小汽车那么长！`,sound:`哼哐哐！🦔🛡️`,fact:`多刺甲龙全身布满了刺和骨板！从脖子到尾巴都是锋利的刺，像一个移动的刺猬城堡！`,q:`多刺甲龙身上有什么保护自己？`,opts:["很多很多刺 🌵","隐身术 👻"],ans:0,ansText:`全身是刺，谁都不敢咬！`},
-{id:64,name:`埃德蒙顿龙`,en:`Edmontosaurus`,emoji:`🦕`,sil:"hadro",color:"#14ccc4",img:`https://e7.pngegg.com/pngimages/42/1010/png-clipart-hadrosaurus-kritosaurus-gryposaurus-academy-of-natural-sciences-of-drexel-university-dinosaur-cretaceous-dinosaur-animals-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆公交车那么长！`,sound:`嘎嗯嗯～～！🦆🌲`,fact:`埃德蒙顿龙是少数发现了"恐龙木乃伊"的种类！有一具化石连皮肤和肌肉的印痕都保存下来了！`,q:`科学家在埃德蒙顿龙化石上发现了什么？`,opts:["羽毛 🪶","皮肤印痕 🏀"],ans:1,ansText:`连皮肤的花纹都保存下来了！`},
-{id:65,name:`原角龙`,en:`Protoceratops`,emoji:`🦕`,sil:"ceratops",color:"#41d84b",img:`https://e7.pngegg.com/pngimages/129/174/png-clipart-maiasaura-late-cretaceous-dinosaur-size-bird-velociraptor-dinosaur-painted-hand.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一只大绵羊那么大！`,sound:`嗯咩咩～！🐑🦕`,fact:`原角龙是三角龙的小祖先！它没有三角龙那么大的角，但有一个很大的头盾。`,q:`原角龙是谁的祖先？`,opts:["三角龙 🦏","霸王龙 🦖"],ans:0,ansText:`它是三角龙的小祖先！`},
-{id:66,name:`华阳龙`,en:`Huayangosaurus`,emoji:`🦕`,sil:"stego",color:"#398de5",img:`https://e7.pngegg.com/pngimages/612/682/png-clipart-tyrannosaurus-stegosaurus-triceratops-parasaurolophus-apatosaurus-dinosaur-tyrannosaurus-grass.png`,era:`jurassic`,diet:`食草`,diff:3,size:`像一辆小汽车那么长！`,sound:`嗯哼嗯！🦕🇨🇳`,fact:`华阳龙是在中国四川发现的，是最古老的剑龙类恐龙之一！它比我们熟悉的剑龙早了2000万年！它的肩膀上有一对大刺！`,q:`华阳龙的肩膀上有什么？`,opts:["翅膀 🦋","大刺 ⚔️"],ans:1,ansText:`两根像宝剑一样的大刺！`},
-{id:67,name:`巨龙`,en:`Titanosaurus`,emoji:`🦕`,sil:"sauropod",color:"#30f2a8",img:`https://e7.pngegg.com/pngimages/284/341/png-clipart-dinosaur-museum-tyrannosaurus-dinosaur-park-reptile-cretaceous-dinosaur-animals-foot.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像2-3辆公交车连起来！比蓝鲸还重！`,sound:`咚～嗡嗡嗡～～！🦕🌍`,fact:`巨龙家族（泰坦巨龙类）是最后的巨型恐龙！它们一直活到恐龙灭绝那天！有的巨龙身上还长着骨质铠甲！`,q:`巨龙有铠甲保护自己吗？`,opts:["有些有 🛡️","都没有 ❌"],ans:0,ansText:`有些巨龙身上有骨头做的铠甲！`},
-{id:68,name:`阿根廷龙`,en:`Argentinosaurus`,emoji:`🦕`,sil:"sauropod",color:"#4dcc1e",img:`https://e7.pngegg.com/pngimages/559/100/png-clipart-brown-bird-illustration-quetzalcoatlus-tyrannosaurus-zhejiangopterus-argentinosaurus-dinosaurs-dinosaurs-dinosaur-fauna-jurassic.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一栋3层楼的房子那么长！重得像15头大象！`,sound:`咚～～～咚～～～！🦕🏗️`,fact:`阿根廷龙可能是有史以来最重的恐龙！一根脊椎骨就有你的小桌子那么大！`,q:`阿根廷龙重得像多少头大象？`,opts:["1头 🐘","15头！🐘×15"],ans:1,ansText:`15头大象那么重！超级重！`},
-{id:69,name:`巴塔哥尼亚巨龙`,en:`Patagotitan`,emoji:`🦕`,sil:"sauropod",color:"#15b7d8",img:`https://e7.pngegg.com/pngimages/873/355/png-clipart-patagotitan-velociraptor-dinosaur-size-argentinosaurus-malawisaurus-dinosaur-monochrome-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:3,size:`像一栋5层楼那么长！目前发现的最大恐龙之一！`,sound:`轰隆隆～～～！🦕🌋`,fact:`巴塔哥尼亚巨龙是目前发现的最大陆地动物之一！在纽约自然历史博物馆里，它的模型大到头伸出了展厅的门！`,q:`巴塔哥尼亚巨龙在博物馆里能放得下吗？`,opts:["能 🏛️","头伸到门外了！😂"],ans:1,ansText:`它太大了，头都伸到展厅外面了！`},
-{id:70,name:`镰刀龙`,en:`Therizinosaurus`,emoji:`🦕`,sil:"therizo",color:"#44e571",img:`https://e7.pngegg.com/pngimages/964/361/png-clipart-dinosaur-therizinosaurus-tarbosaurus-drawing-dino-mammal-child.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`有两个爸爸那么高！爪子有你的胳膊那么长！`,sound:`嘎嗖嗖！！🦖🗡️`,fact:`镰刀龙有全世界最长的爪子——将近1米长！像三把大镰刀！虽然爪子吓人，但它其实是吃草的！那么大的爪子是用来拉树枝、扒树皮吃叶子的！`,q:`镰刀龙的大爪子是用来做什么的？`,opts:["打架 👊","拉树枝吃叶子 🌿"],ans:1,ansText:`那么大的爪子是用来够树叶吃的！`},
-{id:71,name:`慈母龙`,en:`Maiasaura`,emoji:`🦕`,sil:"hadro",color:"#3c6ff2",img:`https://e7.pngegg.com/pngimages/522/765/png-clipart-pachycephalosaurus-tyrannosaurus-velociraptor-dinosaur-summer-prosaurolophus-dinosaur-hand-happy-birthday-vector-images.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆面包车那么长！`,sound:`嗯嗯嗯～（温柔的）🥰🦕`,fact:`慈母龙的名字意思是"好妈妈蜥蜴"！科学家发现它们会像鸟妈妈一样建巢、孵蛋、还喂宝宝吃东西！`,q:`慈母龙会照顾自己的宝宝吗？`,opts:["会！像好妈妈一样 🥰","不会，生完蛋就走了 🚶"],ans:0,ansText:`它是恐龙界最好的妈妈！`},
-{id:72,name:`包头龙`,en:`Euoplocephalus`,emoji:`🦕`,sil:"ankylo",color:"#28ccb0",img:`https://e7.pngegg.com/pngimages/459/167/png-clipart-ankylosaurus-triceratops-dinosaur-euoplocephalus-dinosaur-dragon-carnivoran.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆吉普车那么大！全身铠甲！`,sound:`哐当哐当！🛡️💥`,fact:`包头龙是甲龙的亲戚！它全身都是铠甲和尖刺保护，连眼皮都有骨头做的"眼罩"！`,q:`包头龙连什么地方都有铠甲？`,opts:["尾巴 🦯","眼皮 👁️"],ans:1,ansText:`连眼皮上都有骨头铠甲！`},
-{id:73,name:`戟龙`,en:`Styracosaurus`,emoji:`🦕`,sil:"ceratops",color:"#2bd820",img:`https://e7.pngegg.com/pngimages/584/326/png-clipart-tyrannosaurus-apatosaurus-thunderclap-pet-collector-momma-ida-butch-nash-and-ramsey-the-good-dinosaur-t-rex-the-good-dinosaur-carnivoran-the-walt-disney-company.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆吉普车那么大！头上有好多角！`,sound:`嗯哼嗷！🦏⭐`,fact:`戟龙的头盾边缘有6根大长角！加上鼻子上的大角，一共有7根！像戴了一个超酷的皇冠！`,q:`戟龙头上有多少根角？`,opts:["1根 ☝️","7根！🤯"],ans:1,ansText:`鼻子1根加头盾上6根，一共7根！`},
-{id:74,name:`鹦鹉嘴龙`,en:`Psittacosaurus`,emoji:`🦕`,sil:"ceratops",color:"#1696e5",img:`https://e7.pngegg.com/pngimages/465/553/png-clipart-psittacosaurus-thescelosaurus-tyrannosaurus-masiakasaurus-dinosaur-cretaceous-dinosaur-fauna-terrestrial-animal.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`和一只大狗差不多大！`,sound:`嘎嘎嘎～！🦜🌱`,fact:`鹦鹉嘴龙的嘴巴真的像鹦鹉！弯弯的像一把剪刀，专门用来剪断硬硬的植物！它是在中国发现最多的恐龙之一！`,q:`鹦鹉嘴龙的嘴巴像什么鸟？`,opts:["鹦鹉 🦜","麻雀 🐦"],ans:0,ansText:`像鹦鹉一样弯弯的嘴巴！`},
-{id:75,name:`棱背龙`,en:`Scelidosaurus`,emoji:`🦕`,sil:"stego",color:"#48f29b",img:`https://e7.pngegg.com/pngimages/60/601/png-clipart-dinosaur-king-scelidosaurus-skeleton-dinosaur-skeleton-monochrome-fauna.png`,era:`jurassic`,diet:`食草`,diff:3,size:`像一辆小汽车那么长！`,sound:`嗯哼嗯～！🦕🛡️`,fact:`棱背龙可能是甲龙和剑龙共同的祖先！它身上有骨头做的小铠甲，是"装甲恐龙"的开山鼻祖！`,q:`棱背龙是谁的祖先？`,opts:["霸王龙 🦖","甲龙和剑龙 🛡️"],ans:1,ansText:`它可能是甲龙和剑龙的老祖宗！`},
-{id:76,name:`小盾龙`,en:`Scutellosaurus`,emoji:`🦕`,sil:"stego",color:"#333dcc",img:`https://e7.pngegg.com/pngimages/512/938/png-clipart-scutellosaurus-ankylosaurus-scelidosaurus-amargasaurus-tyrannosaurus-dinosaur-angle-animals.png`,era:`jurassic`,diet:`食草`,diff:1,size:`只有一只小猫那么长！`,sound:`嘀嘀嗯～！🐱🛡️`,fact:`小盾龙是最小的装甲恐龙！它全身有300多个小骨板保护！它是甲龙的"迷你版祖先"！`,q:`小盾龙身上有多少块骨板？`,opts:["3块 3️⃣","300多块！😲"],ans:1,ansText:`300多块小骨板，像穿了一件铠甲衣！`},
-{id:77,name:`尼日尔龙`,en:`Nigersaurus`,emoji:`🦕`,sil:"sauropod",color:"#2bd1d8",img:`https://e7.pngegg.com/pngimages/691/837/png-clipart-diplodocus-apatosaurus-amargasaurus-nigersaurus-mamenchisaurus-dinosaur-wildlife-terrestrial-animal.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆面包车那么长！`,sound:`嗯嚼嚼嚼～！🦕🌱`,fact:`尼日尔龙有一张超级宽的嘴巴，像吸尘器一样！它的嘴里有500多颗牙齿，排成好几排！`,q:`尼日尔龙的嘴巴像什么？`,opts:["像吸尘器 🧹","像长喇叭 📯"],ans:0,ansText:`又宽又平的嘴巴像吸尘器一样吸草吃！`},
-{id:78,name:`冠龙`,en:`Corythosaurus`,emoji:`🦕`,sil:"hadro",color:"#22e53f",img:`https://e7.pngegg.com/pngimages/201/386/png-clipart-brown-t-rex-tyrannosaurus-parasaurolophus-nanotyrannus-corythosaurus-mosasaurus-dinosaur-fauna-terrestrial-animal.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆面包车那么长！头上有一个半圆形的冠！`,sound:`嗡嗡呜～～！🎵🦕`,fact:`冠龙头上的冠像一顶头盔！这个冠也是空心的，可以发出不同的声音！`,q:`冠龙头上的冠像什么？`,opts:["像头盔 ⛑️","像蝴蝶结 🎀"],ans:0,ansText:`像一顶圆圆的头盔！`},
-{id:79,name:`开角龙`,en:`Chasmosaurus`,emoji:`🦕`,sil:"ceratops",color:"#1871f2",img:`https://e7.pngegg.com/pngimages/185/677/png-clipart-chasmosaurus-ceratopsia-triceratops-microceratus-centrosaurus-dinosaur-tyrannosaurus-terrestrial-animal.png`,era:`cretaceous`,diet:`食草`,diff:3,size:`像一辆吉普车那么大！`,sound:`嗯哼哼～！🦏🎨`,fact:`开角龙有一个超大的心形头盾！但这个头盾很薄，中间是空心的。科学家认为头盾是用来"炫耀"的！`,q:`开角龙的头盾是什么形状？`,opts:["三角形 △","心形 ❤️"],ans:1,ansText:`像一颗大大的心！`},
-{id:80,name:`肿头龙`,en:`Stygimoloch`,emoji:`🦕`,sil:"pachy",color:"#3dcca1",img:`https://e7.pngegg.com/pngimages/501/1006/png-clipart-mr-pteranodon-dinosaur-zhejiangopterus-stygimoloch-dinosaur-vertebrate-fauna.png`,era:`cretaceous`,diet:`食草`,diff:3,size:`和一个大人差不多高！`,sound:`砰嗷嗷！💥😈`,fact:`肿头龙的名字意思是"来自冥河的魔鬼"！它的头上有尖刺和凸起，看起来像小恶魔！但有些科学家认为它可能是厚头龙年轻时候的样子！`,q:`肿头龙可能是谁年轻时的样子？`,opts:["三角龙 🦏","厚头龙 💥"],ans:1,ansText:`它可能就是厚头龙小时候！`},
-{id:81,name:`棘甲龙`,en:`Sauropelta`,emoji:`🦕`,sil:"ankylo",color:"#55d836",img:`https://e7.pngegg.com/pngimages/519/964/png-clipart-edmontonia-sauropelta-ankylosaurus-dinosaur-armour-animal-skull-tyrannosaurus-fauna.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆吉普车那么大！`,sound:`哐哐嗯～！🛡️🦕`,fact:`棘甲龙的脖子两侧有一排大大的尖刺！像穿了一个带刺的围巾！`,q:`棘甲龙脖子上有什么？`,opts:["大尖刺 🌵","蝴蝶结 🎀"],ans:0,ansText:`脖子两边有一排保护用的大刺！`},
-{id:82,name:`牛角龙`,en:`Torosaurus`,emoji:`🦕`,sil:"ceratops",color:"#2db7e5",img:`https://e7.pngegg.com/pngimages/787/908/png-clipart-torosaurus-triceratops-gorgosaurus-pachyrhinosaurus-styracosaurus-dinosaur-tyrannosaurus-fauna.png`,era:`cretaceous`,diet:`食草`,diff:3,size:`像一辆大吉普车！头盾比三角龙还大！`,sound:`嗯哞嗷！🐂🛡️`,fact:`牛角龙的头盾是所有陆地动物里最大的头骨之一！有2.5米长，比你家的门还大！`,q:`牛角龙的头盾有多大？`,opts:["比你的手掌大一点 ✋","比门还大！🚪"],ans:1,ansText:`比你家的门还要大！`},
-{id:83,name:`蜿龙`,en:`Amargasaurus`,emoji:`🦕`,sil:"sauropod",color:"#24f26e",img:`https://e7.pngegg.com/pngimages/323/996/png-clipart-amargasaurus-dinosaur-torvosaurus-dinosaurs-purple-png-material.png`,era:`cretaceous`,diet:`食草`,diff:1,size:`像一辆大面包车那么长！背上有两排帆！`,sound:`嗡嗡嘎～！🦕⛵`,fact:`蜿龙的脖子和背上有两排长长的骨刺！看起来像一只脖子上长了好多天线的恐龙！在阿根廷发现的哦！`,q:`蜿龙脖子上有什么特别的？`,opts:["两排骨刺 📡","一条围巾 🧣"],ans:0,ansText:`两排长长的骨刺，超级酷！`},
-{id:84,name:`青岛龙`,en:`Tsintaosaurus`,emoji:`🦕`,sil:"hadro",color:"#1438cc",img:`https://e7.pngegg.com/pngimages/976/686/png-clipart-lambeosaurus-tsintaosaurus-late-cretaceous-corythosaurus-carnotaurus-dinosaurs-png-material-tyrannosaurus.png`,era:`cretaceous`,diet:`食草`,diff:3,size:`像一辆面包车那么长！`,sound:`嗡嘎嗡～！🦄🇨🇳`,fact:`青岛龙是在中国山东青岛发现的！它的头上有一个朝前伸的冠，以前觉得像独角兽的角！`,q:`青岛龙是在哪个城市发现的？`,opts:["上海 🌃","青岛 🏖️"],ans:1,ansText:`在山东青岛发现的！`},
-{id:85,name:`结节龙`,en:`Nodosaurus`,emoji:`🦕`,sil:"ankylo",color:"#41d8cb",img:`https://e7.pngegg.com/pngimages/376/472/png-clipart-ducky-the-land-before-time-triceratops-character-nodosaurus-land-before-time-vertebrate-fauna.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆大面包车那么长！`,sound:`哐嗯嗯～！🛡️🦕`,fact:`结节龙全身布满了"结节"——骨头做的小圆疙瘩！不像甲龙有尾锤，它靠全身的铠甲保护自己。`,q:`结节龙有尾巴锤子吗？`,opts:["有 🔨","没有 ❌"],ans:1,ansText:`它没有尾锤，靠全身铠甲防御！`},
-{id:86,name:`弯龙`,en:`Camptosaurus`,emoji:`🦕`,sil:"hadro",color:"#39e53c",img:`https://e7.pngegg.com/pngimages/980/636/png-clipart-camptosaurus-ornithopod-stegosaurus-coelurus-genasauria-dinosaur-tyrannosaurus-fauna-thumbnail.png`,era:`jurassic`,diet:`食草`,diff:1,size:`像一辆小面包车那么长！`,sound:`嘎嗯嗯～！🦕🌿`,fact:`弯龙的名字意思是"弯曲的蜥蜴"！它可以用两条腿跑，也可以四条腿悠闲地走。`,q:`弯龙可以用几条腿走路？`,opts:["只能两条腿 🦵🦵","两条或四条都行 🦵🦵🦵🦵"],ans:1,ansText:`两条腿或四条腿，随它喜欢！`},
-// ---- 白垩纪 · 杂食 ----
-{id:87,name:`似鸡龙`,en:`Gallimimus`,emoji:`🦖`,sil:"ostrich",color:"#d8f230",img:`https://e7.pngegg.com/pngimages/588/610/png-clipart-black-long-neck-dinosaur-jurassic-world-evolution-dinosaur-park-apatosaurus-brontosaurus-diplodocus-dinosaur-terrestrial-animal-jurassic.png`,era:`cretaceous`,diet:`杂食`,diff:1,size:`有两个爸爸那么高！像一只超级大鸵鸟！`,sound:`咕咕咕嘎！🐔💨`,fact:`似鸡龙是恐龙里跑得最快的之一！它可以跑到每小时70公里——比汽车在小区里开的速度还快！`,q:`似鸡龙跑得快吗？`,opts:["超级快！🏃‍♂️💨","很慢 🐢"],ans:0,ansText:`它是恐龙界的短跑冠军！`},
-{id:88,name:`窃蛋龙`,en:`Oviraptor`,emoji:`🦖`,sil:"ostrich",color:"#cca91e",img:`https://e7.pngegg.com/pngimages/376/658/png-clipart-dinosaur-egg-reptile-oviraptor-cartoon-dinosaur-egg-cartoon-character-angle.png`,era:`cretaceous`,diet:`杂食`,diff:2,size:`像一只大火鸡那么大！头上有冠！`,sound:`咕咕嘎嘎～！🥚🦖`,fact:`窃蛋龙被冤枉了！它的名字意思是"偷蛋的贼"，但后来发现那些蛋是它自己的！它不是在偷蛋，是在孵蛋！`,q:`窃蛋龙真的偷蛋吗？`,opts:["是的，它爱偷蛋 🥚🏃","不是，它在保护自己的蛋 🥚🥰"],ans:1,ansText:`它被冤枉了，其实是个好妈妈/爸爸！`},
-{id:89,name:`似鸟龙`,en:`Ornithomimus`,emoji:`🦖`,sil:"ostrich",color:"#d87115",img:`https://e7.pngegg.com/pngimages/26/393/png-clipart-tyrannosaurus-ornithomimus-tarbosaurus-dinosaur-spinosaurus-angry-dinosaurs-comics-painted-thumbnail.png`,era:`cretaceous`,diet:`杂食`,diff:2,size:`像一辆小汽车那么长！像大鸵鸟！`,sound:`咯咯咯～！🦃💨`,fact:`似鸟龙长得超像鸵鸟！长脖子、长腿、小脑袋！最新发现它的胳膊上真的有羽毛！`,q:`似鸟龙像什么现代动物？`,opts:["像鸵鸟 🦃","像河马 🦛"],ans:0,ansText:`它像一只会跑的大鸵鸟！`},
-{id:90,name:`尾羽龙`,en:`Caudipteryx`,emoji:`🦖`,sil:"birdlike",color:"#e4e544",img:`https://e7.pngegg.com/pngimages/500/277/png-clipart-caudipteryx-oviraptor-bird-dinosaur-therizinosaurus-ancient-animal-dinosaur-hand-drawn-black-and-white-horror-fauna-cartoon.png`,era:`cretaceous`,diet:`杂食`,diff:2,size:`像一只孔雀那么大！`,sound:`啾啾嘎～！🦚🪶`,fact:`尾羽龙是证明恐龙长羽毛的重要证据！它的尾巴和翅膀上有漂亮的扇形羽毛，但飞不起来。是在中国辽宁发现的！`,q:`尾羽龙会飞吗？`,opts:["会飞 ✈️","不会飞，但有漂亮羽毛 🪶"],ans:1,ansText:`有羽毛但飞不起来，羽毛用来臭美！`},
-{id:91,name:`北票龙`,en:`Beipiaosaurus`,emoji:`🦖`,sil:"birdlike",color:"#f2b73c",img:`https://e7.pngegg.com/pngimages/9/1023/png-clipart-nothronychus-therizinosaurus-beipiaosaurus-tyrannosaurus-austroraptor-dinosaur-chicken-tyrannosaurus.png`,era:`cretaceous`,diet:`杂食`,diff:3,size:`像一只大火鸡那么大！`,sound:`嘎嗯嗯～！🪶🇨🇳`,fact:`北票龙身上发现了两种羽毛——又短又密的绒毛和又长又硬的"展示用"羽毛！是在中国辽宁北票发现的。`,q:`北票龙是在中国哪个省发现的？`,opts:["广东 🌴","辽宁 ❄️"],ans:1,ansText:`在辽宁省北票市！`},
-{id:92,name:`偷蛋龙`,en:`Citipati`,emoji:`🦖`,sil:"ostrich",color:"#a9cc28",img:`https://e7.pngegg.com/pngimages/117/668/png-clipart-citipati-tyrannosaurus-daspletosaurus-silhouette-dinosaur-silhouette-animals-tyrannosaurus.png`,era:`cretaceous`,diet:`杂食`,diff:2,size:`像一辆小汽车那么长！头上有大冠！`,sound:`咕嘎咕嘎！🥚🛡️`,fact:`科学家发现了一具超级感人的化石——一只偷蛋龙张开双臂趴在蛋巢上面保护蛋宝宝的化石！`,q:`偷蛋龙化石在干什么？`,opts:["在偷蛋 🏃","在保护自己的蛋 🥰"],ans:1,ansText:`它在保护自己的蛋宝宝！`},
-// ---- 飞行/翼龙 ----
-{id:93,name:`翼龙`,en:`Pteranodon`,emoji:`🦅`,sil:"pterosaur",color:"#d87120",img:`https://e7.pngegg.com/pngimages/21/550/png-clipart-orange-dinosaur-illustration-tyrannosaurus-mrs-pteranodon-dinosaur-train-buddy-and-friends-buddy-cartoon-characters-s-miscellaneous-television.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`翅膀展开像一辆小汽车那么宽！`,sound:`嘎嘎嘎～～！🦅🐟`,fact:`翼龙不是恐龙，它是恐龙的"会飞的邻居"！它的翅膀是一层很薄的皮肤连在超长的第四根手指上！`,q:`翼龙是恐龙吗？`,opts:["是 🦖","不是，但它们是邻居 🦅"],ans:1,ansText:`翼龙不是恐龙，但活在同一个时代！`},
-{id:94,name:`风神翼龙`,en:`Quetzalcoatlus`,emoji:`🦅`,sil:"pterosaur",color:"#e52816",img:`https://e7.pngegg.com/pngimages/559/100/png-clipart-brown-bird-illustration-quetzalcoatlus-tyrannosaurus-zhejiangopterus-argentinosaurus-dinosaurs-dinosaurs-dinosaur-fauna-jurassic-thumbnail.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`翅膀展开像一架小飞机！站起来像长颈鹿那么高！`,sound:`呼呼呼嘎！！🦅✈️`,fact:`风神翼龙是有史以来最大的飞行动物！翅膀展开有10-11米宽，比一架小飞机还大！`,q:`风神翼龙有多大？`,opts:["像麻雀一样小 🐦","像小飞机一样大 ✈️"],ans:1,ansText:`翅膀展开比小飞机还大！`},
-{id:95,name:`小盗龙`,en:`Microraptor`,emoji:`🦅`,sil:"birdlike",color:"#f2b748",img:`https://e7.pngegg.com/pngimages/825/720/png-clipart-petrie-the-sharptooth-dinosaur-microraptor-the-land-before-time-land-child-fauna.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一只大鸽子那么大！有四个翅膀！`,sound:`啾啾啾～！🐦🪶🪶`,fact:`小盗龙有四个翅膀——前腿和后腿上都有翅膀！它可以在树林间滑翔！而且它的羽毛是闪闪发亮的黑色！是在中国辽宁发现的！`,q:`小盗龙有几个翅膀？`,opts:["两个 🪶🪶","四个 🪶🪶🪶🪶"],ans:1,ansText:`四个翅膀！前后腿都有！`},
-{id:96,name:`始祖鸟`,en:`Archaeopteryx`,emoji:`🦅`,sil:"birdlike",color:"#cc6133",img:`https://e7.pngegg.com/pngimages/889/9/png-clipart-triceratops-dinosaur-s-coloring-book-stegosaurus-cute-child-leaf-thumbnail.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一只大乌鸦那么大！`,sound:`嘎啾啾～！🐦🦖`,fact:`始祖鸟是恐龙和鸟之间的"中间人"！它有羽毛像鸟，但也有牙齿和爪子像恐龙！`,q:`始祖鸟有牙齿吗？`,opts:["有！像恐龙一样 🦷","没有，像鸟一样 🐦"],ans:0,ansText:`它有牙齿！半像鸟半像恐龙！`},
-{id:97,name:`中华龙鸟`,en:`Sinosauropteryx`,emoji:`🦅`,sil:"birdlike",color:"#d8c22b",img:`https://e7.pngegg.com/pngimages/821/199/png-clipart-gray-dinosaur-sinosauropteryx-velociraptor-dinosaur-dinosaur-animals-fauna-terrestrial-animal.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一只大猫那么大！`,sound:`嘶啾啾～！🐱🪶`,fact:`中华龙鸟是第一只被发现身上有羽毛的恐龙！科学家还能看出它的颜色——橙红色和白色条纹！是在中国辽宁发现的！`,q:`中华龙鸟的尾巴是什么颜色的？`,opts:["全黑色 ⬛","橙红色和白色条纹 🟠⬜"],ans:1,ansText:`像小狐狸一样的条纹尾巴！`},
-// ---- 海洋爬行动物 ----
-{id:98,name:`沧龙`,en:`Mosasaurus`,emoji:`🌊`,sil:"marine",color:"#e58722",img:`https://e7.pngegg.com/pngimages/916/659/png-clipart-tyrannosaurus-triceratops-apatosaurus-mosasaurus-dinosaur-cartoon-small-dinosaur-cartoon-character-photography.png`,era:`cretaceous`,diet:`食肉`,diff:1,size:`像一辆大公交车那么长！住在海里！`,sound:`嗷嗷哗！！🌊🦈`,fact:`沧龙不是恐龙，它是白垩纪海洋里的"超级大boss"！它的嘴巴里有两排牙齿！`,q:`沧龙住在哪里？`,opts:["陆地上 🏔️","海洋里 🌊"],ans:1,ansText:`它住在大海里，是海洋霸主！`},
-{id:99,name:`蛇颈龙`,en:`Plesiosaurus`,emoji:`🌊`,sil:"marine",color:"#f23d18",img:`https://e7.pngegg.com/pngimages/532/784/png-clipart-plesiosauria-cartoon-dinosaur-cartoon-loch-ness-monster-cartoon-animation.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆面包车那么长！脖子超级长！`,sound:`嗷嗯嗯～哗！🐍🌊`,fact:`蛇颈龙有一个超级长的脖子和胖胖的身体！传说中的尼斯湖水怪就是以它为原型的！`,q:`蛇颈龙用什么游泳？`,opts:["尾巴 🐟","四个大鳍，像船桨 🛶"],ans:1,ansText:`四个大鳍像划船一样在水里游！`},
-{id:100,name:`鱼龙`,en:`Ichthyosaurus`,emoji:`🌊`,sil:"marine",color:"#cca63d",img:`https://e7.pngegg.com/pngimages/973/314/png-clipart-common-bottlenose-dolphin-ichthyosaurus-dinosaur-fossil-fossil-marine-mammal-mammal.png`,era:`triassic`,diet:`食肉`,diff:2,size:`像一辆小汽车那么长！长得像海豚！`,sound:`吱吱哗～！🐬🌊`,fact:`鱼龙长得和海豚几乎一模一样！但它们没有亲缘关系！这叫"趋同进化"！鱼龙的眼睛超级大！`,q:`鱼龙长得像什么现代动物？`,opts:["像海豚 🐬","像螃蟹 🦀"],ans:0,ansText:`它和海豚长得超像！`},
-// ---- 更多精彩恐龙 ----
-{id:101,name:`中华鸟龙`,en:`Sinornithosaurus`,emoji:`🦖`,sil:"raptor",color:"#d87436",img:`https://e7.pngegg.com/pngimages/1016/503/png-clipart-sinornithosaurus-microraptor-velociraptor-dinosaur-utahraptor-animals-dinosaur-fauna-terrestrial-animal.png`,era:`cretaceous`,diet:`食肉`,diff:2,size:`像一只大猫那么大！`,sound:`嘶啾啾～！🐱🪶`,fact:`中华鸟龙全身长满了蓬松的羽毛！有人说它的牙齿里有毒液沟——如果是真的，它就是唯一有毒的恐龙！`,q:`中华鸟龙身上有什么？`,opts:["鳞片 🐍","蓬松的羽毛 🪶"],ans:1,ansText:`全身都是毛茸茸的羽毛！`},
-{id:102,name:`准噶尔翼龙`,en:`Dsungaripterus`,emoji:`🦅`,sil:"pterosaur",color:"#e5342d",img:`https://e7.pngegg.com/pngimages/381/257/png-clipart-pterodactyls-dsungaripterus-aerodactylus-ctenochasma-pterosaurs-dinosaur-fauna-wildlife.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`翅膀展开像一张床那么宽！`,sound:`嘎嘎咔！🦅🐚`,fact:`准噶尔翼龙的嘴巴前面弯弯的像镊子！它用这个镊子嘴在海边的岩石缝里夹贝壳和螃蟹吃！是在中国新疆发现的！`,q:`准噶尔翼龙用弯弯的嘴巴做什么？`,opts:["唱歌 🎤","夹贝壳吃 🐚"],ans:1,ansText:`用弯嘴像镊子一样夹贝壳！`},
-{id:103,name:`伤齿龙`,en:`Troodon`,emoji:`🦖`,sil:"raptor",color:"#eaf224",img:`https://e7.pngegg.com/pngimages/364/229/png-clipart-dinosaur-euclidean-troodon-cartoon-volcano-eruption-computer-wallpaper-cartoon.png`,era:`cretaceous`,diet:`杂食`,diff:2,size:`像一只中等大小的狗那么大！`,sound:`吱吱嘎～！🧠💡`,fact:`伤齿龙可能是最聪明的恐龙！它的脑袋和身体的比例在恐龙里最大！`,q:`伤齿龙是恐龙里最____的？`,opts:["最笨的 🤪","最聪明的 🧠"],ans:1,ansText:`它可能是最聪明的恐龙！`},
-{id:104,name:`激龙`,en:`Irritator`,emoji:`🦖`,sil:"spino",color:"#cc4214",img:`https://e7.pngegg.com/pngimages/905/338/png-clipart-dinosaur-irritator-spinosaurus-dilophosaurus-tyrannosaurus-dinosaur-tyrannosaurus-grass.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一辆面包车那么长！`,sound:`嘎嗷哗！🦖😤`,fact:`激龙的名字意思是"让人恼火的"！因为化石贩子在卖化石之前偷偷用石膏把头骨改造了，科学家气得给它取了这个名字！`,q:`激龙为什么叫这个名字？`,opts:["因为它脾气不好 😤","因为科学家被化石贩子气到了 😡"],ans:1,ansText:`科学家被气到了才取了这个名字！`},
-{id:105,name:`盔龙`,en:`Lambeosaurus`,emoji:`🦕`,sil:"hadro",color:"#4166d8",img:`https://e7.pngegg.com/pngimages/484/363/png-clipart-velociraptor-orodromeus-lambeosaurus-reptile-late-cretaceous-cretaceous-dinosaur-animals-tyrannosaurus-thumbnail.png`,era:`cretaceous`,diet:`食草`,diff:2,size:`像一辆大面包车那么长！头上有斧头形的冠！`,sound:`呜嗡嗡～！🪓🦕`,fact:`盔龙头上的冠像一把斧头！每种盔龙的冠形状都不一样！`,q:`盔龙头上的冠像什么？`,opts:["像蘑菇 🍄","像斧头 🪓"],ans:1,ansText:`像一把帅气的斧头！`},
-{id:106,name:`恐鳄`,en:`Deinosuchus`,emoji:`🐊`,sil:"croc",color:"#e58a39",img:`https://e7.pngegg.com/pngimages/112/453/png-clipart-tyrannosaurus-alligator-sarcosuchus-jurassic-world™-the-game-alligator-animals-tyrannosaurus.png`,era:`cretaceous`,diet:`食肉`,diff:3,size:`像一辆公交车那么长！比现在最大的鳄鱼大3倍！`,sound:`嘎嗷砰！！🐊💥`,fact:`恐鳄不是恐龙，它是一只超级超级大的远古鳄鱼！它大到可以吃恐龙！`,q:`恐鳄会吃什么？`,opts:["只吃鱼 🐟","连恐龙都敢吃！🦖"],ans:1,ansText:`它大到连恐龙都能咬住！`},
-{id:107,name:`巨棘龙`,en:`Gigantspinosaurus`,emoji:`🦕`,sil:"stego",color:"#36f230",img:`https://e7.pngegg.com/pngimages/215/79/png-clipart-kentrosaurus-zoo-tycoon-dinosaur-digs-gigantspinosaurus-stegosaurus-dacentrurus-dinosaur-creative-creative-artwork-tyrannosaurus.png`,era:`jurassic`,diet:`食草`,diff:2,size:`像一辆小汽车那么长！肩膀上有超大的刺！`,sound:`嗯哼嗷！🦕⚔️`,fact:`巨棘龙的肩膀上有一对超级大的尖刺，比它的身体都快大了！是在中国四川发现的。`,q:`巨棘龙最明显的特征是什么？`,opts:["超长的脖子 📏","超大的肩刺 ⚔️"],ans:1,ansText:`肩膀上一对巨大无比的尖刺！`},
-{id:108,name:`孔子鸟`,en:`Confuciusornis`,emoji:`🐦`,sil:"birdlike",color:"#b8cc1e",img:`https://e7.pngegg.com/pngimages/162/196/png-clipart-spruce-confuciusornis-graphy-bird-bird-animals-photography.png`,era:`cretaceous`,diet:`杂食`,diff:1,size:`像一只大鸽子那么大！`,sound:`啾啾啾～！🐦🇨🇳`,fact:`孔子鸟是最早没有牙齿、有角质喙的鸟类之一！公鸟尾巴上有两根超长的飘带羽毛！`,q:`孔子鸟有牙齿吗？`,opts:["有 🦷","没有，它有像鸟一样的喙 🐦"],ans:1,ansText:`它是最早有喙没有牙齿的鸟之一！`},
-{id:109,name:`耀龙`,en:`Yi qi`,emoji:`🦇`,sil:"birdlike",color:"#d8ae15",img:`https://e7.pngegg.com/pngimages/847/345/png-clipart-tai-chi-i-ching-xing-yi-quan-qi-statue-yin-dao-stone-carving-ancient-history.png`,era:`jurassic`,diet:`杂食`,diff:3,size:`只有鸽子那么大！有蝙蝠一样的翅膀！`,sound:`叽叽叽～！🦇✨`,fact:`耀龙的名字只有两个字母"Yi qi"，意思是"奇异的翅膀"，是名字最短的恐龙！它有像蝙蝠一样的膜翅！`,q:`耀龙的翅膀像什么？`,opts:["像鸟的羽毛翅膀 🐦","像蝙蝠的皮膜翅膀 🦇"],ans:1,ansText:`它有独一无二的蝙蝠式翅膀！`},
-{id:110,name:`五彩冠龙`,en:`Guanlong`,emoji:`🦖`,sil:"trex",color:"#e5d544",img:`https://e7.pngegg.com/pngimages/880/655/png-clipart-velociraptor-tyrannosaurus-guanlong-line-art-sketch-dino-google-legendary-creature-tyrannosaurus.png`,era:`jurassic`,diet:`食肉`,diff:2,size:`像一辆小汽车那么长！头上有一个大冠！`,sound:`嘎嗷嗷！🦖👑`,fact:`五彩冠龙是霸王龙最早的祖先之一！它比霸王龙小得多，但头上有一个像公鸡鸡冠一样的大冠！是在中国新疆发现的！`,q:`五彩冠龙是谁的祖先？`,opts:["三角龙 🦏","霸王龙 🦖"],ans:1,ansText:`它是霸王龙的远古小祖先！`}
+  {
+    id: 1,
+    name: "马门溪龙",
+    en: "Mamenchisaurus",
+    img: "切图_抠图/01_Mamenchisaurus_马门溪龙.png",
+    era: "侏罗纪",
+    diet: "食草",
+    size: "全长约22米，脖子就占了一半！",
+    fact: "马门溪龙有全世界最长的脖子！它的脖子有19节骨头（你的脖子只有7节），占了身体长度的一半！这是在中国四川发现的恐龙哦！"
+  },
+  {
+    id: 2,
+    name: "无齿翼龙",
+    en: "Pteranodon",
+    img: "切图_抠图/02_Pteranodon_无齿翼龙.png",
+    era: "白垩纪",
+    diet: "食鱼",
+    size: "翼展可达7米，像一架小飞机！",
+    fact: "无齿翼龙其实不是恐龙，而是翼龙！它没有牙齿，用长长的喙抓鱼吃。头上有一个大大的冠，可能是用来在飞行时保持平衡的！"
+  },
+  {
+    id: 3,
+    name: "剑龙",
+    en: "Stegosaurus",
+    img: "切图_抠图/03_Stegosaurus_剑龙.png",
+    era: "侏罗纪",
+    diet: "食草",
+    size: "像一辆公交车那么长！背上有好多三角形的板子！",
+    fact: "剑龙的脑子只有核桃那么大！它那么大的身体配一个核桃大小的脑袋，是恐龙里脑子最小的之一！但它尾巴上的4根大刺可厉害了！"
+  },
+  {
+    id: 4,
+    name: "腔骨龙",
+    en: "Coelophysis",
+    img: "切图_抠图/04_Coelophysis_腔骨龙.png",
+    era: "三叠纪",
+    diet: "食肉",
+    size: "和一只大狗差不多大！",
+    fact: "腔骨龙是最早的恐龙之一！它的骨头是空心的，像吸管一样，所以跑起来特别特别快，比你骑小自行车还快呢！"
+  },
+  {
+    id: 5,
+    name: "双型齿翼龙",
+    en: "Dimorphodon",
+    img: "切图_抠图/05_Dimorphodon_双型齿翼龙.png",
+    era: "侏罗纪",
+    diet: "食肉",
+    size: "翼展约1.4米，像一只大老鹰！",
+    fact: "双型齿翼龙有两种不同形状的牙齿，所以叫'双型齿'！前面是尖牙用来抓猎物，后面是小牙用来咀嚼。它的头很大，看起来有点萌！"
+  },
+  {
+    id: 6,
+    name: "异特龙",
+    en: "Allosaurus",
+    img: "切图_抠图/06_Allosaurus_异特龙.png",
+    era: "侏罗纪",
+    diet: "食肉",
+    size: "像一辆大卡车那么长！有两个爸爸那么高！",
+    fact: "异特龙是侏罗纪的\"霸王龙\"！它的嘴巴可以张得超级大，像蛇一样把下巴\"脱臼\"来咬更大的东西！它还会组队打猎，一群异特龙一起去抓大恐龙！"
+  },
+  {
+    id: 7,
+    name: "窃蛋龙",
+    en: "Oviraptor",
+    img: "切图_抠图/07_Oviraptor_窃蛋龙.png",
+    era: "白垩纪",
+    diet: "杂食",
+    size: "像一只大火鸡那么大！",
+    fact: "窃蛋龙其实不偷蛋！科学家一开始以为它在偷别人的蛋，但后来发现它是在保护自己的蛋！它是个好妈妈/好爸爸！它有一个像鹦鹉一样的喙，可能吃坚果和小动物。"
+  },
+  {
+    id: 8,
+    name: "美颌龙",
+    en: "Compsognathus",
+    img: "切图_抠图/08_Compsognathus_美颌龙.png",
+    era: "侏罗纪",
+    diet: "食肉",
+    size: "只有一只鸡那么大！",
+    fact: "美颌龙是最小的恐龙之一，只有鸡那么大！但别小看它，它跑得飞快，专门抓蜥蜴和虫子吃。它的名字意思是\"漂亮的下巴\"！"
+  },
+  {
+    id: 9,
+    name: "尖角龙",
+    en: "Centrosaurus",
+    img: "切图_抠图/09_Centrosaurus_尖角龙.png",
+    era: "白垩纪",
+    diet: "食草",
+    size: "像一辆小汽车那么大！",
+    fact: "尖角龙鼻子上有一个大角，头盾边缘还有很多小角和装饰！科学家发现过成千上万只尖角龙的化石在一起，说明它们是成群生活的，就像牛群一样！"
+  },
+  {
+    id: 10,
+    name: "风神翼龙",
+    en: "Quetzalcoatlus",
+    img: "切图_抠图/10_Quetzalcoatlus_风神翼龙.png",
+    era: "白垩纪",
+    diet: "食肉",
+    size: "翼展可达11米！站起来有长颈鹿那么高！",
+    fact: "风神翼龙是有史以来最大的飞行动物！它的翼展有11米，比一架小飞机还宽！它站在地上有长颈鹿那么高，可能会像鹤一样在地上走来走去抓小恐龙吃！"
+  }
 ];
 
-const CARTOON_TEMPLATES = {
-  "trex": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="108" cy="132" rx="42" ry="38" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- belly --> <ellipse cx="108" cy="138" rx="28" ry="24" fill="{l}"/> <!-- tail --> <path d="M148 140 Q170 135 178 125 Q182 118 180 125 Q185 120 182 128 Q175 138 155 142" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- legs --> <ellipse cx="92" cy="170" rx="14" ry="8" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="125" cy="170" rx="14" ry="8" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- tiny arms --> <path d="M78 120 Q68 115 65 120 Q62 125 66 126" fill="{c}" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <path d="M138 118 Q148 113 152 118 Q155 123 150 124" fill="{c}" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- head --> <ellipse cx="100" cy="78" rx="38" ry="32" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- mouth area --> <ellipse cx="100" cy="92" rx="25" ry="10" fill="{d}" opacity="0.3"/> <!-- eyes white --> <ellipse cx="85" cy="70" rx="13" ry="14" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="115" cy="70" rx="13" ry="14" fill="white" stroke="#4a3728" stroke-width="2"/> <!-- pupils --> <ellipse cx="88" cy="72" rx="7" ry="8" fill="#2d2d2d"/> <ellipse cx="118" cy="72" rx="7" ry="8" fill="#2d2d2d"/> <!-- eye sparkle --> <circle cx="84" cy="67" r="3.5" fill="white"/> <circle cx="114" cy="67" r="3.5" fill="white"/> <circle cx="90" cy="74" r="1.8" fill="white"/> <circle cx="120" cy="74" r="1.8" fill="white"/> <!-- blush cheeks --> <ellipse cx="68" cy="85" rx="8" ry="5" fill="#ff9999" opacity="0.6"/> <ellipse cx="132" cy="85" rx="8" ry="5" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M85 90 Q100 105 115 90" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- teeth --> <path d="M88 90 L91 96 L94 90" fill="white" stroke="#4a3728" stroke-width="1.2"/> <path d="M98 91 L101 98 L104 91" fill="white" stroke="#4a3728" stroke-width="1.2"/> <path d="M108 90 L111 96 L114 90" fill="white" stroke="#4a3728" stroke-width="1.2"/> <!-- nostrils --> <circle cx="92" cy="62" r="2" fill="#4a3728"/> <circle cx="108" cy="62" r="2" fill="#4a3728"/> <!-- spots --> <circle cx="120" cy="120" r="6" fill="{d}" opacity="0.3"/> <circle cx="95" cy="148" r="5" fill="{d}" opacity="0.3"/> <circle cx="130" cy="145" r="4" fill="{d}" opacity="0.3"/> </svg>`,
-  "raptor": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="105" cy="120" rx="32" ry="28" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="105" cy="125" rx="20" ry="16" fill="{l}"/> <!-- tail --> <path d="M135 125 Q158 120 172 112 Q180 108 178 115 Q182 110 180 118 Q170 128 142 130" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- feathers on tail --> <path d="M165 110 L170 100 L172 112" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M172 108 L178 98 L178 110" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <!-- legs --> <path d="M90 148 L85 168 L78 168 M85 168 L88 172 M85 168 L82 172" fill="none" stroke="#4a3728" stroke-width="3" stroke-linecap="round"/> <path d="M118 148 L115 168 L108 168 M115 168 L118 172 M115 168 L112 172" fill="none" stroke="#4a3728" stroke-width="3" stroke-linecap="round"/> <!-- big claw --> <path d="M78 168 L72 162" stroke="#4a3728" stroke-width="3.5" stroke-linecap="round"/> <path d="M108 168 L102 162" stroke="#4a3728" stroke-width="3.5" stroke-linecap="round"/> <!-- arms --> <path d="M78 110 Q65 105 60 112 L55 108" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- head --> <ellipse cx="88" cy="75" rx="28" ry="25" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- snout --> <path d="M65 82 Q60 78 62 72 Q65 68 70 72" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- eyes --> <ellipse cx="80" cy="68" rx="11" ry="12" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="100" cy="70" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="82" cy="70" rx="6" ry="7" fill="#2d2d2d"/> <ellipse cx="102" cy="72" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="79" cy="66" r="3" fill="white"/> <circle cx="99" cy="68" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="68" cy="82" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M72 82 Q82 92 95 82" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> <!-- head feathers --> <path d="M98 52 L102 38 L105 52" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M92 55 L94 42 L98 55" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> </svg>`,
-  "sauropod": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="118" cy="130" rx="48" ry="35" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="118" cy="135" rx="32" ry="22" fill="{l}"/> <!-- tail --> <path d="M162 135 Q178 130 188 125 Q192 128 188 132 Q180 138 165 140" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- legs --> <ellipse cx="92" cy="168" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="110" cy="170" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="135" cy="170" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="150" cy="168" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- neck --> <path d="M78 125 Q58 105 48 72 Q45 58 50 48" fill="{c}" stroke="#4a3728" stroke-width="3"/> <path d="M90 120 Q72 100 62 72 Q60 62 62 52" fill="{c}"/> <!-- head --> <ellipse cx="52" cy="42" rx="20" ry="18" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- eyes --> <ellipse cx="44" cy="36" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="60" cy="36" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="46" cy="38" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="62" cy="38" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="43" cy="34" r="2.5" fill="white"/> <circle cx="59" cy="34" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="38" cy="48" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <ellipse cx="66" cy="48" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M42 50 Q52 58 62 50" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> <!-- spots on body --> <circle cx="105" cy="118" r="7" fill="{d}" opacity="0.25"/> <circle cx="130" cy="115" r="6" fill="{d}" opacity="0.25"/> <circle cx="145" cy="128" r="8" fill="{d}" opacity="0.25"/> </svg>`,
-  "stego": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="105" cy="128" rx="48" ry="32" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="105" cy="134" rx="32" ry="20" fill="{l}"/> <!-- back plates --> <path d="M65 98 L60 78 L72 98" fill="{d}" stroke="#4a3728" stroke-width="2"/> <path d="M80 92 L78 68 L88 90" fill="{d}" stroke="#4a3728" stroke-width="2"/> <path d="M95 88 L95 62 L105 88" fill="{d}" stroke="#4a3728" stroke-width="2"/> <path d="M112 90 L115 65 L122 88" fill="{d}" stroke="#4a3728" stroke-width="2"/> <path d="M128 95 L135 78 L138 97" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- tail with spikes --> <path d="M150 130 Q168 125 178 118" fill="{c}" stroke="#4a3728" stroke-width="3"/> <path d="M172 118 L180 108" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <path d="M175 122 L185 115" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <!-- legs --> <ellipse cx="78" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="95" cy="164" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="118" cy="164" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="135" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- head --> <ellipse cx="52" cy="118" rx="20" ry="17" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- eyes --> <ellipse cx="44" cy="112" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="58" cy="113" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="46" cy="114" rx="4.5" ry="5.5" fill="#2d2d2d"/> <ellipse cx="60" cy="115" rx="4" ry="5" fill="#2d2d2d"/> <circle cx="43" cy="110" r="2.5" fill="white"/> <circle cx="57" cy="111" r="2" fill="white"/> <!-- blush --> <ellipse cx="38" cy="124" rx="5" ry="3.5" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M42 125 Q50 132 58 125" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "ankylo": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body (armored dome) --> <ellipse cx="100" cy="120" rx="52" ry="32" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- armor pattern --> <ellipse cx="80" cy="108" rx="8" ry="7" fill="{d}" opacity="0.4" stroke="#4a3728" stroke-width="1.5"/> <ellipse cx="100" cy="105" rx="9" ry="8" fill="{d}" opacity="0.4" stroke="#4a3728" stroke-width="1.5"/> <ellipse cx="120" cy="108" rx="8" ry="7" fill="{d}" opacity="0.4" stroke="#4a3728" stroke-width="1.5"/> <ellipse cx="90" cy="122" rx="7" ry="6" fill="{d}" opacity="0.35" stroke="#4a3728" stroke-width="1.5"/> <ellipse cx="110" cy="120" rx="8" ry="7" fill="{d}" opacity="0.35" stroke="#4a3728" stroke-width="1.5"/> <!-- belly --> <ellipse cx="100" cy="138" rx="35" ry="12" fill="{l}"/> <!-- side spikes --> <path d="M52 115 L42 108" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <path d="M55 125 L44 122" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <path d="M148 115 L158 108" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <path d="M145 125 L156 122" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <!-- tail with club --> <path d="M148 128 Q165 125 175 120" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="180" cy="118" rx="10" ry="8" fill="{d}" stroke="#4a3728" stroke-width="2.5"/> <!-- legs --> <ellipse cx="78" cy="155" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="98" cy="157" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="118" cy="157" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="135" cy="155" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- head --> <ellipse cx="52" cy="112" rx="18" ry="16" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- horn bumps --> <circle cx="38" cy="105" r="4" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <circle cx="42" cy="98" r="3" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <!-- eyes --> <ellipse cx="46" cy="108" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="60" cy="108" rx="6" ry="7" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="47" cy="110" rx="4" ry="5" fill="#2d2d2d"/> <ellipse cx="61" cy="110" rx="3.5" ry="4.5" fill="#2d2d2d"/> <circle cx="45" cy="106" r="2" fill="white"/> <circle cx="59" cy="106" r="1.8" fill="white"/> <!-- blush --> <ellipse cx="38" cy="118" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M44 120 Q52 126 60 120" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "ceratops": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="115" cy="128" rx="45" ry="32" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="115" cy="134" rx="30" ry="20" fill="{l}"/> <!-- legs --> <ellipse cx="88" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="108" cy="164" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="132" cy="164" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="148" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- tail --> <path d="M158 130 Q172 126 180 122" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- frill --> <path d="M48 72 Q38 55 42 38 Q48 25 62 22 Q75 20 85 28 Q92 22 100 25 Q108 28 105 42 Q108 55 100 72" fill="{d}" stroke="#4a3728" stroke-width="2.5" opacity="0.7"/> <!-- frill dots --> <circle cx="55" cy="40" r="4" fill="{c}" opacity="0.5"/> <circle cx="75" cy="32" r="4" fill="{c}" opacity="0.5"/> <circle cx="95" cy="40" r="4" fill="{c}" opacity="0.5"/> <!-- head --> <ellipse cx="72" cy="88" rx="32" ry="28" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- horns --> <path d="M55 72 L42 48" stroke="{d}" stroke-width="5" stroke-linecap="round"/> <path d="M88 72 L102 48" stroke="{d}" stroke-width="5" stroke-linecap="round"/> <!-- nose horn --> <path d="M58 95 L52 85" stroke="{d}" stroke-width="4" stroke-linecap="round"/> <!-- beak --> <path d="M44 95 Q40 92 42 88 Q46 85 50 88" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- eyes --> <ellipse cx="62" cy="82" rx="10" ry="11" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="82" cy="82" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="64" cy="84" rx="5.5" ry="6.5" fill="#2d2d2d"/> <ellipse cx="84" cy="84" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="61" cy="80" r="3" fill="white"/> <circle cx="81" cy="80" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="52" cy="96" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <ellipse cx="92" cy="96" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M56 100 Q68 110 80 100" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "hadro": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="110" cy="125" rx="42" ry="34" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="110" cy="132" rx="28" ry="20" fill="{l}"/> <!-- tail --> <path d="M148 128 Q168 122 178 115" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- legs --> <ellipse cx="92" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="128" cy="162" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- head --> <ellipse cx="75" cy="78" rx="28" ry="24" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- crest --> <path d="M80 56 Q85 32 95 28 Q102 32 98 52" fill="{d}" stroke="#4a3728" stroke-width="2.5"/> <!-- duck bill --> <path d="M50 85 Q42 82 40 78 Q42 74 48 76 Q46 80 50 82" fill="{d}" stroke="#4a3728" stroke-width="2" opacity="0.7"/> <!-- eyes --> <ellipse cx="66" cy="72" rx="10" ry="11" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="86" cy="73" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="68" cy="74" rx="5.5" ry="6.5" fill="#2d2d2d"/> <ellipse cx="88" cy="75" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="65" cy="70" r="3" fill="white"/> <circle cx="85" cy="71" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="55" cy="86" rx="6" ry="4" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M58 88 Q70 96 82 88" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> <!-- arm --> <path d="M78 108 Q68 102 62 108" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> </svg>`,
-  "pterosaur": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="100" cy="108" rx="22" ry="20" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="100" cy="112" rx="14" ry="12" fill="{l}"/> <!-- wings --> <path d="M80 100 Q50 72 18 68 Q22 78 32 82 Q18 82 12 88 Q28 92 48 92 Q62 95 78 102" fill="{c}" stroke="#4a3728" stroke-width="2.5" opacity="0.9"/> <path d="M120 100 Q150 72 182 68 Q178 78 168 82 Q182 82 188 88 Q172 92 152 92 Q138 95 122 102" fill="{c}" stroke="#4a3728" stroke-width="2.5" opacity="0.9"/> <!-- legs --> <path d="M90 128 L88 140 L82 140" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <path d="M110 128 L112 140 L118 140" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- head --> <ellipse cx="100" cy="78" rx="20" ry="18" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- crest --> <path d="M108 62 Q115 42 120 38 Q122 45 118 60" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- beak --> <path d="M82 82 L72 78 L80 75" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- eyes --> <ellipse cx="92" cy="74" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="108" cy="74" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="93" cy="76" rx="4.5" ry="5.5" fill="#2d2d2d"/> <ellipse cx="109" cy="76" rx="4" ry="5" fill="#2d2d2d"/> <circle cx="91" cy="72" r="2.5" fill="white"/> <circle cx="107" cy="72" r="2" fill="white"/> <!-- blush --> <ellipse cx="82" cy="84" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <ellipse cx="118" cy="84" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M90 86 Q100 92 110 86" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "birdlike": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="100" cy="112" rx="26" ry="24" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="100" cy="118" rx="17" ry="14" fill="{l}"/> <!-- wing feathers --> <path d="M75 105 Q55 92 42 95 Q48 102 55 100 Q45 105 40 112 Q55 110 70 108" fill="{c}" stroke="#4a3728" stroke-width="2" opacity="0.85"/> <path d="M125 105 Q145 92 158 95 Q152 102 145 100 Q155 105 160 112 Q145 110 130 108" fill="{c}" stroke="#4a3728" stroke-width="2" opacity="0.85"/> <!-- tail feathers --> <path d="M122 120 Q140 115 148 108" fill="{d}" stroke="#4a3728" stroke-width="2"/> <path d="M124 125 Q142 122 152 115" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- legs --> <path d="M90 136 L88 155 L82 155 M88 155 L92 158" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <path d="M110 136 L112 155 L118 155 M112 155 L108 158" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- head --> <ellipse cx="95" cy="72" rx="22" ry="20" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- head feather crest --> <path d="M95 52 L92 35 L100 48" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M100 50 L100 32 L106 46" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <!-- eyes --> <ellipse cx="86" cy="68" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="104" cy="68" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="88" cy="70" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="106" cy="70" rx="4.5" ry="5.5" fill="#2d2d2d"/> <circle cx="85" cy="66" r="2.5" fill="white"/> <circle cx="103" cy="66" r="2" fill="white"/> <!-- blush --> <ellipse cx="76" cy="78" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <ellipse cx="114" cy="78" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile/beak --> <path d="M85 80 Q92 86 100 80" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "marine": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="100" cy="100" rx="55" ry="28" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="100" cy="108" rx="40" ry="15" fill="{l}"/> <!-- flippers --> <path d="M65 88 Q48 72 38 78 Q42 85 52 85 Q42 90 38 98 Q50 95 62 92" fill="{c}" stroke="#4a3728" stroke-width="2"/> <path d="M135 88 Q152 72 162 78 Q158 85 148 85 Q158 90 162 98 Q150 95 138 92" fill="{c}" stroke="#4a3728" stroke-width="2"/> <!-- tail fin --> <path d="M152 100 Q168 92 178 88 Q175 98 170 100 Q178 105 175 115 Q165 108 155 105" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- head --> <ellipse cx="48" cy="95" rx="22" ry="20" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- snout --> <path d="M30 98 Q22 95 24 90 Q28 88 32 92" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- eyes --> <ellipse cx="42" cy="88" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="56" cy="90" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="44" cy="90" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="58" cy="92" rx="4" ry="5" fill="#2d2d2d"/> <circle cx="41" cy="86" r="2.5" fill="white"/> <circle cx="55" cy="88" r="2" fill="white"/> <!-- blush --> <ellipse cx="35" cy="102" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M35 102 Q44 110 55 102" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "spino": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="108" cy="130" rx="40" ry="32" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="108" cy="136" rx="26" ry="18" fill="{l}"/> <!-- sail --> <path d="M82 100 Q78 65 88 50 Q95 48 95 65 Q92 80 88 98" fill="{d}" stroke="#4a3728" stroke-width="2" opacity="0.75"/> <path d="M98 95 Q98 60 108 45 Q115 42 112 62 Q110 78 108 92" fill="{d}" stroke="#4a3728" stroke-width="2" opacity="0.75"/> <path d="M118 98 Q120 68 128 55 Q132 52 130 68 Q128 82 125 98" fill="{d}" stroke="#4a3728" stroke-width="2" opacity="0.75"/> <!-- tail --> <path d="M145 135 Q165 130 175 122" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- legs --> <ellipse cx="92" cy="165" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="125" cy="165" rx="12" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- head (croc-like long snout) --> <ellipse cx="68" cy="108" rx="28" ry="18" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- long snout --> <path d="M44 112 Q32 110 28 106 Q30 100 38 102 Q34 104 38 108" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <circle cx="36" cy="105" r="1.5" fill="#4a3728"/> <!-- eyes --> <ellipse cx="60" cy="102" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="78" cy="102" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="62" cy="104" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="80" cy="104" rx="4.5" ry="5.5" fill="#2d2d2d"/> <circle cx="59" cy="100" r="2.5" fill="white"/> <circle cx="77" cy="100" r="2" fill="white"/> <!-- blush --> <ellipse cx="50" cy="115" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M42 115 Q55 122 68 115" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "ostrich": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="108" cy="112" rx="28" ry="24" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="108" cy="118" rx="18" ry="14" fill="{l}"/> <!-- wing --> <path d="M82 105 Q65 95 55 100 Q62 108 72 105 Q60 112 58 120 Q72 115 82 110" fill="{c}" stroke="#4a3728" stroke-width="2" opacity="0.85"/> <!-- tail --> <path d="M132 112 Q150 108 160 100 Q158 108 152 112 Q158 115 155 122 Q148 118 138 118" fill="{c}" stroke="#4a3728" stroke-width="2"/> <!-- long legs --> <path d="M95 136 L90 162 L82 162 M90 162 L95 168" fill="none" stroke="#4a3728" stroke-width="3" stroke-linecap="round"/> <path d="M120 136 L118 162 L110 162 M118 162 L122 168" fill="none" stroke="#4a3728" stroke-width="3" stroke-linecap="round"/> <!-- long neck --> <path d="M88 102 Q80 82 78 60" fill="{c}" stroke="#4a3728" stroke-width="3"/> <path d="M95 98 Q88 80 86 62" fill="{c}"/> <!-- head --> <ellipse cx="80" cy="48" rx="18" ry="16" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- beak --> <path d="M64 52 L56 48 L62 44" fill="{d}" stroke="#4a3728" stroke-width="2"/> <!-- eyes --> <ellipse cx="74" cy="44" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="88" cy="44" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="76" cy="46" rx="4.5" ry="5.5" fill="#2d2d2d"/> <ellipse cx="90" cy="46" rx="4" ry="5" fill="#2d2d2d"/> <circle cx="73" cy="42" r="2.5" fill="white"/> <circle cx="87" cy="42" r="2" fill="white"/> <!-- blush --> <ellipse cx="68" cy="54" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M70 55 Q78 62 88 55" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "croc": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="108" cy="108" rx="52" ry="22" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="108" cy="115" rx="38" ry="12" fill="{l}"/> <!-- back ridges --> <path d="M80 88 L78 82 L82 88" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M92 86 L90 80 L94 86" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M104 85 L102 78 L106 85" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M116 86 L114 80 L118 86" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M128 88 L126 82 L130 88" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <!-- tail --> <path d="M155 108 Q172 102 182 95 Q185 100 180 105 Q185 108 182 115 Q172 110 158 112" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- legs --> <ellipse cx="80" cy="132" rx="10" ry="6" fill="{c}" stroke="#4a3728" stroke-width="2"/> <ellipse cx="100" cy="134" rx="10" ry="6" fill="{c}" stroke="#4a3728" stroke-width="2"/> <ellipse cx="122" cy="134" rx="10" ry="6" fill="{c}" stroke="#4a3728" stroke-width="2"/> <ellipse cx="140" cy="132" rx="10" ry="6" fill="{c}" stroke="#4a3728" stroke-width="2"/> <!-- head (long snout) --> <ellipse cx="52" cy="102" rx="25" ry="16" fill="{c}" stroke="#4a3728" stroke-width="3"/> <path d="M30 105 Q22 102 24 96 Q28 92 34 96" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- teeth --> <path d="M30 100 L32 105 L34 100" fill="white" stroke="#4a3728" stroke-width="1"/> <path d="M36 101 L38 106 L40 101" fill="white" stroke="#4a3728" stroke-width="1"/> <!-- eyes --> <ellipse cx="46" cy="95" rx="8" ry="9" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="62" cy="95" rx="7" ry="8" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="48" cy="97" rx="4.5" ry="5.5" fill="#2d2d2d"/> <ellipse cx="64" cy="97" rx="4" ry="5" fill="#2d2d2d"/> <circle cx="45" cy="93" r="2.5" fill="white"/> <circle cx="61" cy="93" r="2" fill="white"/> <!-- blush --> <ellipse cx="38" cy="108" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M35 108 Q45 114 58 108" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-  "therizo": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="100" cy="118" rx="30" ry="28" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="100" cy="125" rx="20" ry="16" fill="{l}"/> <!-- giant claws! --> <path d="M68 95 Q55 85 42 88 L32 78" stroke="{d}" stroke-width="4" stroke-linecap="round" fill="none"/> <path d="M68 95 Q52 80 40 82 L30 72" stroke="{d}" stroke-width="3.5" stroke-linecap="round" fill="none"/> <path d="M68 95 Q50 92 42 95 L32 88" stroke="{d}" stroke-width="3" stroke-linecap="round" fill="none"/> <path d="M132 95 Q145 85 158 88 L168 78" stroke="{d}" stroke-width="4" stroke-linecap="round" fill="none"/> <path d="M132 95 Q148 80 160 82 L170 72" stroke="{d}" stroke-width="3.5" stroke-linecap="round" fill="none"/> <path d="M132 95 Q150 92 158 95 L168 88" stroke="{d}" stroke-width="3" stroke-linecap="round" fill="none"/> <!-- legs --> <ellipse cx="88" cy="155" rx="10" ry="12" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="112" cy="155" rx="10" ry="12" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- tail --> <path d="M128 125 Q142 122 150 118" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- fluffy body --> <path d="M72 100 Q68 95 72 90 Q78 92 75 98" fill="{c}" stroke="#4a3728" stroke-width="1.5"/> <path d="M128 100 Q132 95 128 90 Q122 92 125 98" fill="{c}" stroke="#4a3728" stroke-width="1.5"/> <!-- head --> <ellipse cx="100" cy="68" rx="22" ry="20" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- eyes --> <ellipse cx="90" cy="64" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="110" cy="64" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="92" cy="66" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="112" cy="66" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="89" cy="62" r="2.5" fill="white"/> <circle cx="109" cy="62" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="80" cy="76" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <ellipse cx="120" cy="76" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M90 78 Q100 86 110 78" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> <!-- head feathers --> <path d="M95 48 L92 32 L100 45" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> <path d="M102 48 L105 30 L108 45" fill="{d}" stroke="#4a3728" stroke-width="1.5"/> </svg>`,
-  "pachy": `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> <!-- body --> <ellipse cx="108" cy="125" rx="35" ry="30" fill="{c}" stroke="#4a3728" stroke-width="3"/> <ellipse cx="108" cy="132" rx="22" ry="16" fill="{l}"/> <!-- tail --> <path d="M140 128 Q158 122 168 115" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- legs --> <ellipse cx="92" cy="162" rx="11" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <ellipse cx="122" cy="162" rx="11" ry="7" fill="{c}" stroke="#4a3728" stroke-width="2.5"/> <!-- arms --> <path d="M78 115 Q68 110 62 115" fill="none" stroke="#4a3728" stroke-width="2.5" stroke-linecap="round"/> <!-- head --> <ellipse cx="90" cy="72" rx="26" ry="24" fill="{c}" stroke="#4a3728" stroke-width="3"/> <!-- thick dome --> <ellipse cx="90" cy="52" rx="22" ry="14" fill="{d}" stroke="#4a3728" stroke-width="2.5"/> <!-- dome bumps --> <circle cx="72" cy="58" r="3.5" fill="{c}" stroke="#4a3728" stroke-width="1.5"/> <circle cx="108" cy="58" r="3.5" fill="{c}" stroke="#4a3728" stroke-width="1.5"/> <circle cx="76" cy="48" r="2.5" fill="{c}" stroke="#4a3728" stroke-width="1.2"/> <circle cx="104" cy="48" r="2.5" fill="{c}" stroke="#4a3728" stroke-width="1.2"/> <!-- eyes --> <ellipse cx="80" cy="70" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="100" cy="70" rx="9" ry="10" fill="white" stroke="#4a3728" stroke-width="2"/> <ellipse cx="82" cy="72" rx="5" ry="6" fill="#2d2d2d"/> <ellipse cx="102" cy="72" rx="5" ry="6" fill="#2d2d2d"/> <circle cx="79" cy="68" r="2.5" fill="white"/> <circle cx="99" cy="68" r="2.5" fill="white"/> <!-- blush --> <ellipse cx="70" cy="82" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <ellipse cx="110" cy="82" rx="5" ry="3" fill="#ff9999" opacity="0.6"/> <!-- smile --> <path d="M80 85 Q90 94 100 85" fill="none" stroke="#4a3728" stroke-width="2" stroke-linecap="round"/> </svg>`,
-};
-
-// 15 BabyBus-style cartoon templates
-
-
-function cartoonSVG(sil, color, size) {
-  const template = CARTOON_TEMPLATES[sil] || CARTOON_TEMPLATES["raptor"];
-  const c = color;
-  const d = darkenColor(color, 0.6);
-  const l = lightenColor(color, 0.9);
-  const svg = template.replace(/\{c\}/g, c).replace(/\{d\}/g, d).replace(/\{l\}/g, l);
-  return svg;
-}
-
-function darkenColor(hex, factor) {
-  let r = parseInt(hex.slice(1,3),16);
-  let g = parseInt(hex.slice(3,5),16);
-  let b = parseInt(hex.slice(5,7),16);
-  r = Math.max(0, Math.floor(r * factor));
-  g = Math.max(0, Math.floor(g * factor));
-  b = Math.max(0, Math.floor(b * factor));
-  return '#' + r.toString(16).padStart(2,'0') + g.toString(16).padStart(2,'0') + b.toString(16).padStart(2,'0');
-}
-
-function lightenColor(hex, amt) {
-  let r = parseInt(hex.slice(1,3),16);
-  let g = parseInt(hex.slice(3,5),16);
-  let b = parseInt(hex.slice(5,7),16);
-  r = Math.min(255, Math.floor(r + (255-r)*amt));
-  g = Math.min(255, Math.floor(g + (255-g)*amt));
-  b = Math.min(255, Math.floor(b + (255-b)*amt));
-  return '#' + r.toString(16).padStart(2,'0') + g.toString(16).padStart(2,'0') + b.toString(16).padStart(2,'0');
-}
-
-function darken(hex) { return darkenColor(hex, 0.6); }
-function lighten(hex, amt) { return lightenColor(hex, amt || 0.85); }
-
-
-function handleImgError(img) {
-  img.onerror = null;
-  const sil = img.dataset.sil;
-  const color = img.dataset.color;
-  img.parentElement.innerHTML = cartoonSVG(sil, color);
-}
-
-// ============ STATE ============
-let currentEra = 'all';
-let currentDiff = 'all';
-let filteredDinos = [...DINOS];
 let currentIndex = 0;
-let seenCards = JSON.parse(localStorage.getItem('dinoSeen') || '{}');
-let quizAnswered = {};
-let touchStartX = 0;
-let touchStartY = 0;
-let isSwiping = false;
-
-// ============ AUDIO ============
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(type) {
-  try {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    if (type === 'correct') {
-      osc.frequency.setValueAtTime(523, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
-      osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
-    } else if (type === 'wrong') {
-      osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(200, audioCtx.currentTime + 0.15);
-    } else if (type === 'flip') {
-      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(550, audioCtx.currentTime + 0.05);
-    } else {
-      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-    }
-    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime);
-    osc.stop(audioCtx.currentTime + 0.3);
-  } catch(e) {}
-}
-
-// ============ FILTER ============
-function setEra(era) {
-  currentEra = era;
-  document.querySelectorAll('.era-btn').forEach(b => b.classList.toggle('active', b.dataset.era === era));
-  applyFilter();
-}
-function setDiff(diff) {
-  currentDiff = diff;
-  document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === diff));
-  applyFilter();
-}
-function applyFilter() {
-  filteredDinos = DINOS.filter(d => {
-    if (currentEra !== 'all' && d.era !== currentEra) return false;
-    if (currentDiff !== 'all' && d.diff !== parseInt(currentDiff)) return false;
-    return true;
-  });
-  currentIndex = 0;
-  quizAnswered = {};
-  renderCard();
-}
-
-// ============ RENDER ============
-function getEraClass(era) {
-  if (era === 'triassic') return 'era-triassic';
-  if (era === 'jurassic') return 'era-jurassic';
-  return 'era-cretaceous';
-}
-function getEraName(era) {
-  if (era === 'triassic') return '三叠纪';
-  if (era === 'jurassic') return '侏罗纪';
-  return '白垩纪';
-}
-function getDiffStars(diff) {
-  return '⭐'.repeat(diff);
-}
 
 function renderCard() {
+  const dino = DINOS[currentIndex];
   const container = document.getElementById('cardContainer');
-  const counter = document.getElementById('cardCounter');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-
-  if (filteredDinos.length === 0) {
-    container.innerHTML = '<div class="empty-state">🦕 没有找到恐龙哦～<br>换个筛选条件试试！</div>';
-    counter.textContent = '0 / 0';
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
-    updateProgress();
-    return;
-  }
-
-  if (currentIndex >= filteredDinos.length) currentIndex = filteredDinos.length - 1;
-  if (currentIndex < 0) currentIndex = 0;
-
-  const d = filteredDinos[currentIndex];
-  const seen = seenCards[d.id];
-  const eraClass = getEraClass(d.era);
-
-  // Mark as seen
-  if (!seenCards[d.id]) {
-    seenCards[d.id] = true;
-    localStorage.setItem('dinoSeen', JSON.stringify(seenCards));
-  }
-
+  
   container.innerHTML = `
-    <div class="card-wrapper ${eraClass}" id="cardWrapper" style="--dino-color:${d.color};--dino-light:${lighten(d.color, 0.88)};--dino-lighter:${lighten(d.color, 0.94)}">
-      <div class="card" id="card" onclick="flipCard(event)">
+    <div class="card-wrapper" onclick="flipCard()">
+      <div class="card" id="card">
         <div class="card-face card-front">
-          <span class="card-seen">${seen ? '✅' : '🆕'}</span>
-          <span class="card-number">#${d.id}</span>
-          <div class="dino-cartoon">${d.img ? `<img src="${d.img}" alt="${d.name}" loading="lazy" data-sil="${d.sil}" data-color="${d.color}" onerror="handleImgError(this)">` : cartoonSVG(d.sil, d.color)}</div>
-          <div class="dino-name-cn">${d.name}</div>
-          <div class="dino-name-en">${d.en}</div>
-          <div class="diff-stars">${getDiffStars(d.diff)}</div>
-          <div class="dino-sound">${d.sound}</div>
-          <div class="dino-meta">
-            <span class="meta-tag">📏 ${d.size.substring(0, 20)}${d.size.length > 20 ? '...' : ''}</span>
-            <span class="meta-tag">${d.diet.includes('肉') ? '🍖' : '🌿'} ${d.diet}</span>
-            <span class="meta-tag">🕐 ${getEraName(d.era)}</span>
+          <div class="dino-img">
+            <img src="${dino.img}" alt="${dino.name}">
           </div>
-          <div class="dino-size">${d.size}</div>
-          <div class="flip-hint">👆 点击翻转看冷知识</div>
+          <div class="dino-name-cn">${dino.name}</div>
+          <div class="dino-name-en">${dino.en}</div>
+          <div class="dino-meta">
+            <span class="meta-tag">🕐 ${dino.era}</span>
+            <span class="meta-tag">${dino.diet === '食草' ? '🌿' : dino.diet === '食肉' ? '🍖' : dino.diet === '食鱼' ? '🐟' : '🍽️'} ${dino.diet}</span>
+          </div>
+          <div class="dino-meta">
+            <span class="meta-tag">📏 ${dino.size}</span>
+          </div>
+          <div class="flip-hint">👆 点击翻转查看趣味知识</div>
         </div>
         <div class="card-face card-back">
-          <span class="card-number">#${d.id}</span>
-          <div class="back-title">${d.emoji} ${d.name} 的秘密</div>
+          <div class="back-title">🧠 趣味知识</div>
           <div class="fun-fact">
-            <span class="fun-fact-label">💡 趣味冷知识：</span><br>
-            ${d.fact}
+            <span class="fun-fact-label">你知道吗？</span><br><br>
+            ${dino.fact}
           </div>
-          <div class="quiz-section">
-            <div class="quiz-question">❓ ${d.q}</div>
-            <div class="quiz-options" id="quizOpts">
-              ${d.opts.map((opt, i) => `<button class="quiz-opt" onclick="answerQuiz(event, ${d.id}, ${i}, ${d.ans})">${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}
-            </div>
-            <div class="quiz-result" id="quizResult_${d.id}">${quizAnswered[d.id] !== undefined ? (quizAnswered[d.id] ? '✅ 答对啦！' + d.ansText : '❌ 再想想～ 正确答案：' + d.ansText) : ''}</div>
-          </div>
-          <div class="flip-hint">👆 点击翻回正面</div>
+          <div class="flip-hint" style="margin-top:20px;">👆 点击翻回正面</div>
         </div>
       </div>
     </div>
   `;
-
-  // Restore quiz state
-  if (quizAnswered[d.id] !== undefined) {
-    const opts = container.querySelectorAll('.quiz-opt');
-    opts.forEach((opt, i) => {
-      opt.disabled = true;
-      if (i === d.ans) opt.classList.add('correct');
-      if (quizAnswered[d.id] === false && i !== d.ans) {
-        // Find which was clicked wrong - just dim all non-correct
-      }
-    });
-  }
-
-  counter.textContent = `${currentIndex + 1} / ${filteredDinos.length}`;
-  prevBtn.disabled = currentIndex === 0;
-  nextBtn.disabled = currentIndex === filteredDinos.length - 1;
-  updateProgress();
-
-  // Setup touch
-  const wrapper = document.getElementById('cardWrapper');
-  wrapper.addEventListener('touchstart', onTouchStart, { passive: true });
-  wrapper.addEventListener('touchmove', onTouchMove, { passive: true });
-  wrapper.addEventListener('touchend', onTouchEnd, { passive: true });
+  
+  document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${DINOS.length}`;
+  document.getElementById('progressFill').style.width = `${((currentIndex + 1) / DINOS.length) * 100}%`;
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').disabled = currentIndex === DINOS.length - 1;
 }
 
-function flipCard(e) {
-  if (isSwiping) return;
-  // Don't flip if clicking quiz button
-  if (e.target.closest('.quiz-opt')) return;
-  const card = document.getElementById('card');
-  card.classList.toggle('flipped');
-  playSound('flip');
+function flipCard() {
+  document.getElementById('card').classList.toggle('flipped');
 }
 
-function answerQuiz(e, dinoId, chosen, correct) {
-  e.stopPropagation();
-  if (quizAnswered[dinoId] !== undefined) return;
-
-  const dino = DINOS.find(d => d.id === dinoId);
-  const isCorrect = chosen === correct;
-  quizAnswered[dinoId] = isCorrect;
-
-  const resultEl = document.getElementById(`quizResult_${dinoId}`);
-  const opts = document.querySelectorAll('.quiz-opt');
-
-  opts.forEach((opt, i) => {
-    opt.disabled = true;
-    if (i === correct) opt.classList.add('correct');
-    if (i === chosen && !isCorrect) opt.classList.add('wrong');
-  });
-
-  if (isCorrect) {
-    resultEl.textContent = '✅ 答对啦！' + dino.ansText;
-    playSound('correct');
-    showConfetti();
-  } else {
-    resultEl.textContent = '❌ 再想想～ 正确答案：' + dino.ansText;
-    playSound('wrong');
-  }
-}
-
-function showConfetti() {
-  const emojis = ['🎉', '⭐', '🌟', '🎊', '💫', '✨'];
-  for (let i = 0; i < 8; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti';
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    el.style.left = (Math.random() * 80 + 10) + '%';
-    el.style.top = (Math.random() * 40 + 20) + '%';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1000);
-  }
-}
-
-// ============ NAVIGATION ============
 function prevCard() {
   if (currentIndex > 0) {
-    const wrapper = document.getElementById('cardWrapper');
-    wrapper.classList.add('swipe-right');
-    setTimeout(() => {
-      currentIndex--;
-      renderCard();
-    }, 200);
-    playSound('nav');
+    currentIndex--;
+    renderCard();
   }
 }
+
 function nextCard() {
-  if (currentIndex < filteredDinos.length - 1) {
-    const wrapper = document.getElementById('cardWrapper');
-    wrapper.classList.add('swipe-left');
-    setTimeout(() => {
-      currentIndex++;
-      renderCard();
-    }, 200);
-    playSound('nav');
+  if (currentIndex < DINOS.length - 1) {
+    currentIndex++;
+    renderCard();
   }
 }
 
-// ============ TOUCH/SWIPE ============
-function onTouchStart(e) {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-  isSwiping = false;
-}
-function onTouchMove(e) {
-  const dx = e.touches[0].clientX - touchStartX;
-  const dy = e.touches[0].clientY - touchStartY;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) {
-    isSwiping = true;
+// 支持滑动
+let touchStartX = 0;
+document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) prevCard();
+    else nextCard();
   }
-}
-function onTouchEnd(e) {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (isSwiping && Math.abs(dx) > 60) {
-    if (dx < 0) nextCard();
-    else prevCard();
-  }
-  setTimeout(() => { isSwiping = false; }, 100);
-}
+});
 
-// ============ PROGRESS ============
-function updateProgress() {
-  const total = DINOS.length;
-  const seen = Object.keys(seenCards).length;
-  document.getElementById('progressText').textContent = `已看 ${seen}/${total}`;
-  document.getElementById('progressFill').style.width = (seen / total * 100) + '%';
-}
-
-// ============ KEYBOARD ============
+// 键盘支持
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') prevCard();
   if (e.key === 'ArrowRight') nextCard();
-  if (e.key === ' ') { e.preventDefault(); flipCard(e); }
+  if (e.key === ' ') flipCard();
 });
 
-// ============ INIT ============
 renderCard();
 </script>
 </body>

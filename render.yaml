@@ -1,10 +1,5 @@
 services:
-  - type: web
+  - type: static
     name: dinosaur-flashcards
-    runtime: static
-    buildCommand: echo "Static site, no build needed"
+    buildCommand: ""
     staticPublishPath: .
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: public, max-age=3600
