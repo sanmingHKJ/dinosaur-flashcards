@@ -36,6 +36,7 @@ body {
   width: 40px; height: 40px; border-radius: 50%;
   border: none; font-size: 1.2em; cursor: pointer;
   background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  touch-action: manipulation;
 }
 .auto-btn.playing { background: #81C784; }
 
@@ -55,6 +56,7 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   text-align: center;
   cursor: pointer;
+  touch-action: manipulation;
 }
 .card:active { opacity: 0.9; }
 
@@ -142,6 +144,7 @@ body {
   background: #FF7043;
   color: white;
   box-shadow: 0 4px 12px rgba(255,112,67,0.3);
+  touch-action: manipulation;
 }
 .nav-btn:active { transform: scale(0.95); }
 .nav-btn:disabled { background: #E0E0E0; box-shadow: none; }
@@ -300,12 +303,20 @@ function runAuto() {
 
 // 滑动
 let startX = 0;
-document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+let startY = 0;
+document.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+}, { passive: true });
 document.addEventListener('touchend', e => {
-  const d = e.changedTouches[0].clientX - startX;
-  if (d > 60) prevCard();
-  else if (d < -60) nextCard();
-});
+  const dx = e.changedTouches[0].clientX - startX;
+  const dy = e.changedTouches[0].clientY - startY;
+  // 只有水平滑动明显时才切换，避免干扰点击
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 0) prevCard();
+    else nextCard();
+  }
+}, { passive: true });
 
 renderCard();
 </script>
