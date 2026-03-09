@@ -296,8 +296,9 @@ function speak(text, onEnd) {
   
   // 优先使用 Audio API（华为设备兼容）
   try {
-    // 使用 Google TTS API（免费，无需密钥）
-    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=zh-CN&client=tw-ob&q=${encodeURIComponent(text)}`;
+    // 使用百度 TTS API（国内稳定，免费，无需密钥）
+    // spd: 语速(0-15) per: 发音人(0女,1男,3情感男,4情感女) vol: 音量(0-15)
+    const ttsUrl = `https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&per=4&vol=10&pit=6&text=${encodeURIComponent(text)}`;
     
     currentAudio = new Audio(ttsUrl);
     
