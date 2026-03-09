@@ -352,11 +352,12 @@ function runAuto() {
   });
 }
 
-// 通用触摸处理
+// 通用触摸处理 - 使用 pointer events（更可靠）
 function handleTouch(element, callback) {
-  let touchStartTime = 0;
-  let touchMoved = false;
-  let touchStartPos = {x: 0, y: 0};
+  let pointerStartTime = 0;
+  let pointerMoved = false;
+  let pointerStartPos = {x: 0, y: 0};
+  let pointerId = null;
   
   // 阻止长按菜单
   element.addEventListener('contextmenu', (e) => {
@@ -364,59 +365,59 @@ function handleTouch(element, callback) {
     return false;
   });
   
-  // 触摸开始
-  element.addEventListener('touchstart', (e) => {
-    touchStartTime = Date.now();
-    touchMoved = false;
-    if (e.touches[0]) {
-      touchStartPos.x = e.touches[0].clientX;
-      touchStartPos.y = e.touches[0].clientY;
-    }
+  // 指针按下
+  element.addEventListener('pointerdown', (e) => {
+    pointerStartTime = Date.now();
+    pointerMoved = false;
+    pointerStartPos.x = e.clientX;
+    pointerStartPos.y = e.clientY;
+    pointerId = e.pointerId;
     element.classList.add('pressed');
-    log('touchstart: ' + element.id);
-  }, {passive: false});
+    log('pointerdown: ' + element.id);
+  });
   
-  // 触摸移动
-  element.addEventListener('touchmove', (e) => {
-    if (e.touches[0]) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartPos.x);
-      const dy = Math.abs(e.touches[0].clientY - touchStartPos.y);
+  // 指针移动
+  element.addEventListener('pointermove', (e) => {
+    if (pointerId === e.pointerId) {
+      const dx = Math.abs(e.clientX - pointerStartPos.x);
+      const dy = Math.abs(e.clientY - pointerStartPos.y);
       if (dx > 10 || dy > 10) {
-        touchMoved = true;
+        pointerMoved = true;
         element.classList.remove('pressed');
+        log('pointermove: moved!');
       }
     }
-  }, {passive: true});
+  });
   
-  // 触摸结束
-  element.addEventListener('touchend', (e) => {
-    element.classList.remove('pressed');
-    const duration = Date.now() - touchStartTime;
-    const isDisabled = element.disabled === true;
-    log(`touchend: ${element.id}, moved=${touchMoved}, dur=${duration}, disabled=${isDisabled}`);
+  // 指针抬起
+  element.addEventListener('pointerup', (e) => {
+    if (pointerId !== e.pointerId) return;
     
-    // 放宽时间限制到 2000ms（华为设备响应慢），且没移动
-    if (!touchMoved && duration < 2000 && !isDisabled) {
+    element.classList.remove('pressed');
+    const duration = Date.now() - pointerStartTime;
+    const isDisabled = element.disabled === true;
+    log(`pointerup: ${element.id}, moved=${pointerMoved}, dur=${duration}, disabled=${isDisabled}`);
+    
+    // 没移动且没禁用
+    if (!pointerMoved && !isDisabled) {
       e.preventDefault();
       e.stopPropagation();
       log('✅ 执行回调: ' + element.id);
       callback();
     } else {
-      log(`❌ 跳过: moved=${touchMoved}, dur=${duration}, disabled=${isDisabled}`);
+      log(`❌ 跳过: moved=${pointerMoved}, disabled=${isDisabled}`);
     }
-  }, {passive: false});
+    
+    pointerId = null;
+  });
   
-  // 触摸取消
-  element.addEventListener('touchcancel', () => {
-    element.classList.remove('pressed');
-    log('touchcancel: ' + element.id);
-  }, {passive: true});
-  
-  // 点击事件作为备用
-  element.addEventListener('click', (e) => {
-    e.preventDefault();
-    log('click fallback: ' + element.id);
-    callback();
+  // 指针取消
+  element.addEventListener('pointercancel', (e) => {
+    if (pointerId === e.pointerId) {
+      element.classList.remove('pressed');
+      log('pointercancel: ' + element.id);
+      pointerId = null;
+    }
   });
 }
 
