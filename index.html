@@ -283,23 +283,41 @@ function speak(text, onEnd) {
 }
 
 function renderCard() {
+  log(`📄 renderCard开始: currentIndex=${currentIndex}`);
+  
   const d = DINOS[currentIndex];
+  log(`恐龙数据: ${d.name}`);
+  
   seen.add(currentIndex);
   
-  document.getElementById('card').innerHTML = `
-    <div class="dino-img"><img src="${d.img}" alt="${d.name}"></div>
-    <div class="dino-name">${d.name}</div>
-    <div class="dino-tags">
-      <span>${d.dietEmoji}</span>
-      <span>🦴</span>
-    </div>
-    <div class="play-status">👆 点我听声音</div>
-  `;
+  const cardEl = document.getElementById('card');
+  log(`card元素: ${cardEl ? '存在' : '不存在'}`);
   
-  document.getElementById('navCenter').textContent = `${currentIndex + 1} / ${DINOS.length}`;
+  if (cardEl) {
+    cardEl.innerHTML = `
+      <div class="dino-img"><img src="${d.img}" alt="${d.name}"></div>
+      <div class="dino-name">${d.name}</div>
+      <div class="dino-tags">
+        <span>${d.dietEmoji}</span>
+        <span>🦴</span>
+      </div>
+      <div class="play-status">👆 点我听声音</div>
+    `;
+    log('✅ innerHTML已设置');
+  }
+  
+  const navCenter = document.getElementById('navCenter');
+  if (navCenter) {
+    navCenter.textContent = `${currentIndex + 1} / ${DINOS.length}`;
+    log(`✅ navCenter已更新: ${navCenter.textContent}`);
+  }
+  
   document.getElementById('prevBtn').disabled = currentIndex === 0;
   document.getElementById('nextBtn').disabled = currentIndex === DINOS.length - 1;
+  log(`✅ 按钮状态已更新`);
+  
   renderDots();
+  log('✅ renderCard完成');
 }
 
 function renderDots() {
