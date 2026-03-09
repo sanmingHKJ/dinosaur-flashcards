@@ -312,27 +312,36 @@ function renderDots() {
 }
 
 function speakDino() {
-  log('播放语音: ' + currentIndex);
+  log('🔊 播放语音: ' + currentIndex);
   speak(DINOS[currentIndex].sound);
 }
 
 function prevCard() {
+  log(`prevCard调用: currentIndex=${currentIndex}`);
   if (currentIndex > 0) {
-    log('上一张');
+    log('⬅️ 切换到上一张');
     synth.cancel();
     currentIndex--;
+    log(`新index: ${currentIndex}`);
     renderCard();
     if (autoPlay) speakDino();
+  } else {
+    log('❌ 已经是第一张，无法后退');
   }
 }
 
 function nextCard() {
+  log(`nextCard调用: currentIndex=${currentIndex}, max=${DINOS.length - 1}`);
   if (currentIndex < DINOS.length - 1) {
-    log('下一张');
+    log('➡️ 切换到下一张');
     synth.cancel();
     currentIndex++;
+    log(`新index: ${currentIndex}`);
     renderCard();
+    log('renderCard完成');
     if (autoPlay) speakDino();
+  } else {
+    log('❌ 已经是最后一张，无法前进');
   }
 }
 
