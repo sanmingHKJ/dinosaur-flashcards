@@ -367,9 +367,10 @@ function runAuto() {
   });
 }
 
-// 通用触摸处理 - 华为设备专用方案（不依赖 up 事件）
+// 通用触摸处理 - 华为设备专用方案（使用 RAF 代替 setTimeout）
 function handleTouch(element, callback) {
-  let tapTimer = null;
+  let rafId = null;
+  let startTime = 0;
   let pointerMoved = false;
   let pointerStartPos = {x: 0, y: 0};
   let isExecuting = false;
@@ -380,36 +381,49 @@ function handleTouch(element, callback) {
     return false;
   });
   
-  // 指针按下 - 设置延迟执行
+  // RAF 检查函数
+  function checkAndExecute() {
+    const elapsed = Date.now() - startTime;
+    log(`RAF检查: ${element.id}, elapsed=${elapsed}ms, moved=${pointerMoved}`);
+    
+    if (elapsed >= 150) {
+      // 时间到了
+      const isDisabled = element.disabled === true;
+      log(`⏰ RAF触发! ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
+      
+      if (!pointerMoved && !isDisabled && !isExecuting) {
+        isExecuting = true;
+        element.classList.remove('pressed');
+        log('✅ 执行回调(RAF): ' + element.id);
+        callback();
+      } else {
+        log(`❌ RAF跳过: moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
+      }
+    } else {
+      // 继续等待
+      rafId = requestAnimationFrame(checkAndExecute);
+    }
+  }
+  
+  // 指针按下 - 启动 RAF 循环
   element.addEventListener('pointerdown', (e) => {
-    // 清除之前的定时器
-    if (tapTimer) {
-      clearTimeout(tapTimer);
-      log('清除旧定时器');
+    // 取消之前的 RAF
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      log('取消旧RAF');
     }
     
     pointerMoved = false;
     isExecuting = false;
     pointerStartPos.x = e.clientX;
     pointerStartPos.y = e.clientY;
+    startTime = Date.now();
     element.classList.add('pressed');
     log('pointerdown: ' + element.id);
     
-    // 150ms 后执行（如果没移动）
-    log('设置定时器 150ms');
-    tapTimer = setTimeout(() => {
-      const isDisabled = element.disabled === true;
-      log(`⏰ 定时器触发! ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
-      
-      if (!pointerMoved && !isDisabled && !isExecuting) {
-        isExecuting = true;
-        element.classList.remove('pressed');
-        log('✅ 执行回调(延迟): ' + element.id);
-        callback();
-      } else {
-        log(`❌ 定时器跳过: moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
-      }
-    }, 150);
+    // 启动 RAF 循环
+    log('启动RAF循环');
+    rafId = requestAnimationFrame(checkAndExecute);
   });
   
   // 指针移动 - 只有大幅移动才取消
@@ -419,8 +433,11 @@ function handleTouch(element, callback) {
     if (dx > 30 || dy > 30) {
       pointerMoved = true;
       element.classList.remove('pressed');
-      clearTimeout(tapTimer);
-      log('pointermove: 大幅移动取消');
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      log('pointermove: 大幅移动取消RAF');
     }
   });
   
@@ -431,7 +448,10 @@ function handleTouch(element, callback) {
     
     const isDisabled = element.disabled === true;
     if (!pointerMoved && !isDisabled && !isExecuting) {
-      clearTimeout(tapTimer);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       isExecuting = true;
       log('✅ 执行回调(立即): ' + element.id);
       callback();
