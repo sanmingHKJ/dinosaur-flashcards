@@ -255,16 +255,23 @@ const synth = window.speechSynthesis || {
 };
 const debugEl = document.getElementById('debug');
 
-// 检测语音是否可用
-let speechAvailable = false;
+// 检测语音是否可用（Audio API 几乎总是可用）
+let speechAvailable = true;
 try {
-  speechAvailable = !!(window.speechSynthesis && 
-                       window.SpeechSynthesisUtterance &&
-                       typeof synth.speak === 'function');
-  log('语音检测: ' + (speechAvailable ? '可用' : '不可用'));
+  // 测试 Audio API
+  const testAudio = new Audio();
+  speechAvailable = !!(testAudio && typeof testAudio.play === 'function');
+  log('语音检测(Audio): ' + (speechAvailable ? '可用' : '不可用'));
 } catch(e) {
-  speechAvailable = false;
-  log('语音检测失败: ' + e.message);
+  // 回退检测 speechSynthesis
+  try {
+    speechAvailable = !!(window.speechSynthesis && 
+                         window.SpeechSynthesisUtterance);
+    log('语音检测(Synthesis): ' + (speechAvailable ? '可用' : '不可用'));
+  } catch(e2) {
+    speechAvailable = false;
+    log('语音检测失败: ' + e.message);
+  }
 }
 
 function log(msg) {
@@ -275,36 +282,87 @@ function log(msg) {
   }
 }
 
+// 当前播放的 Audio 对象
+let currentAudio = null;
+
 function speak(text, onEnd) {
-  if (!synth || !synth.cancel || !synth.speak) {
-    log('⚠️ speechSynthesis不可用');
+  // 停止当前播放
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  
+  const statusEl = document.querySelector('.play-status');
+  
+  // 优先使用 Audio API（华为设备兼容）
+  try {
+    // 使用 Google TTS API（免费，无需密钥）
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=zh-CN&client=tw-ob&q=${encodeURIComponent(text)}`;
+    
+    currentAudio = new Audio(ttsUrl);
+    
+    currentAudio.onloadstart = () => {
+      if (statusEl) {
+        statusEl.innerHTML = '<div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>';
+      }
+      log('🔊 开始播放: ' + text.substring(0, 20));
+    };
+    
+    currentAudio.onended = () => {
+      if (statusEl) {
+        statusEl.textContent = '👆 点我听声音';
+      }
+      currentAudio = null;
+      log('✓ 播放完成');
+      if (onEnd) onEnd();
+    };
+    
+    currentAudio.onerror = (e) => {
+      log('⚠️ Audio播放失败，尝试 speechSynthesis');
+      // 回退到 speechSynthesis
+      speakWithSynthesis(text, onEnd, statusEl);
+    };
+    
+    currentAudio.play().catch(err => {
+      log('⚠️ Audio.play()失败: ' + err.message);
+      speakWithSynthesis(text, onEnd, statusEl);
+    });
+    
+  } catch(e) {
+    log('⚠️ Audio创建失败: ' + e.message);
+    speakWithSynthesis(text, onEnd, statusEl);
+  }
+}
+
+// 备用方案：使用 speechSynthesis
+function speakWithSynthesis(text, onEnd, statusEl) {
+  if (!synth || !synth.speak) {
+    log('⚠️ 所有TTS方案均不可用');
+    if (statusEl) statusEl.textContent = '👆 点我听声音';
     if (onEnd) onEnd();
     return;
   }
   
   try {
-    synth.cancel();
-  } catch(e) {
-    log('⚠️ synth.cancel失败: ' + e.message);
-  }
+    if (synth.cancel) synth.cancel();
+  } catch(e) {}
   
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'zh-CN';
   u.rate = 0.8;
   u.pitch = 1.15;
+  
   u.onstart = () => {
-    const statusEl = document.querySelector('.play-status');
     if (statusEl) {
       statusEl.innerHTML = '<div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>';
     }
   };
+  
   u.onend = () => {
-    const statusEl = document.querySelector('.play-status');
-    if (statusEl) {
-      statusEl.textContent = '👆 点我听声音';
-    }
+    if (statusEl) statusEl.textContent = '👆 点我听声音';
     if (onEnd) onEnd();
   };
+  
   u.onerror = u.onend;
   
   try {
@@ -380,6 +438,11 @@ function prevCard() {
     log(`prevCard调用: currentIndex=${currentIndex}`);
     if (currentIndex > 0) {
       log('⬅️ 切换到上一张');
+      // 停止当前音频
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
       if (synth && synth.cancel) {
         try { synth.cancel(); } catch(e) {}
       }
@@ -401,6 +464,11 @@ function nextCard() {
     log(`nextCard调用: currentIndex=${currentIndex}, max=${DINOS.length - 1}`);
     if (currentIndex < DINOS.length - 1) {
       log('➡️ 切换到下一张');
+      // 停止当前音频
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
       if (synth && synth.cancel) {
         try { 
           synth.cancel(); 
@@ -437,6 +505,12 @@ function toggleAuto() {
   } else {
     btn.textContent = '▶️';
     btn.classList.remove('playing');
+    
+    // 停止当前音频
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
     if (synth && synth.cancel) {
       try { synth.cancel(); } catch(e) {}
     }
