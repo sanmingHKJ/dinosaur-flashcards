@@ -383,14 +383,17 @@ function handleTouch(element, callback) {
   element.addEventListener('touchend', (e) => {
     element.classList.remove('pressed');
     const duration = Date.now() - touchStartTime;
-    log(`touchend: ${element.id}, moved=${touchMoved}, dur=${duration}`);
+    const isDisabled = element.disabled;
+    log(`touchend: ${element.id}, moved=${touchMoved}, dur=${duration}, disabled=${isDisabled}`);
     
-    // 快速点击且没移动
-    if (!touchMoved && duration < 500) {
+    // 放宽时间限制到 1000ms，且没移动
+    if (!touchMoved && duration < 1000 && !isDisabled) {
       e.preventDefault();
       e.stopPropagation();
-      log('执行回调: ' + element.id);
+      log('✅ 执行回调: ' + element.id);
       callback();
+    } else {
+      log(`❌ 跳过: moved=${touchMoved}, dur=${duration}, disabled=${isDisabled}`);
     }
   }, {passive: false});
   
