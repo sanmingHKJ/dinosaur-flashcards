@@ -222,25 +222,35 @@ body {
 <script>
 const DINOS = [
   { name: "马门溪龙", img: "images/01_mamenchisaurus.png", dietEmoji: "🌿",
-    sound: "马门溪龙！脖子超级超级长,比长颈鹿还要长好几倍呢！" },
+    sound: "马门溪龙！脖子超级超级长,比长颈鹿还要长好几倍呢！",
+    audioFile: "sounds/01_mamenchisaurus.mp3" },
   { name: "无齿翼龙", img: "images/02_pteranodon.png", dietEmoji: "🐟",
-    sound: "无齿翼龙！会飞的大翅膀,在天上抓鱼吃！" },
+    sound: "无齿翼龙！会飞的大翅膀,在天上抓鱼吃！",
+    audioFile: "sounds/02_pteranodon.mp3" },
   { name: "剑龙", img: "images/03_stegosaurus.png", dietEmoji: "🌿",
-    sound: "剑龙！背上有好多三角形的板子,尾巴上还有大刺！" },
+    sound: "剑龙！背上有好多三角形的板子,尾巴上还有大刺！",
+    audioFile: "sounds/03_stegosaurus.mp3" },
   { name: "腔骨龙", img: "images/04_coelophysis.png", dietEmoji: "🍖",
-    sound: "腔骨龙！跑得飞快的小恐龙,骨头是空心的,像吸管一样轻！" },
+    sound: "腔骨龙！跑得飞快的小恐龙,骨头是空心的,像吸管一样轻！",
+    audioFile: "sounds/04_coelophysis.mp3" },
   { name: "双型齿翼龙", img: "images/05_dimorphodon.png", dietEmoji: "🍖",
-    sound: "双型齿翼龙！有两种牙齿的飞龙,头很大,萌萌的！" },
+    sound: "双型齿翼龙！有两种牙齿的飞龙,头很大,萌萌的！",
+    audioFile: "sounds/05_dimorphodon.mp3" },
   { name: "异特龙", img: "images/06_allosaurus.png", dietEmoji: "🍖",
-    sound: "异特龙！超级厉害的大恐龙,嘴巴可以张得很大很大！" },
+    sound: "异特龙！超级厉害的大恐龙,嘴巴可以张得很大很大！",
+    audioFile: "sounds/06_allosaurus.mp3" },
   { name: "窃蛋龙", img: "images/07_oviraptor.png", dietEmoji: "🥚",
-    sound: "窃蛋龙！其实是个好妈妈,在保护自己的蛋宝宝呢！" },
+    sound: "窃蛋龙！其实是个好妈妈,在保护自己的蛋宝宝呢！",
+    audioFile: "sounds/07_oviraptor.mp3" },
   { name: "美颌龙", img: "images/08_compsognathus.png", dietEmoji: "🍖",
-    sound: "美颌龙！只有小鸡那么大,是最小的恐龙,跑得可快了！" },
+    sound: "美颌龙！只有小鸡那么大,是最小的恐龙,跑得可快了！",
+    audioFile: "sounds/08_compsognathus.mp3" },
   { name: "尖角龙", img: "images/09_centrosaurus.png", dietEmoji: "🌿",
-    sound: "尖角龙！鼻子上有一个大角,喜欢一大群一起走！" },
+    sound: "尖角龙！鼻子上有一个大角,喜欢一大群一起走！",
+    audioFile: "sounds/09_centrosaurus.mp3" },
   { name: "风神翼龙", img: "images/10_quetzalcoatlus.png", dietEmoji: "🍖",
-    sound: "风神翼龙！最大的飞行动物,站起来有长颈鹿那么高！" }
+    sound: "风神翼龙！最大的飞行动物,站起来有长颈鹿那么高！",
+    audioFile: "sounds/10_quetzalcoatlus.mp3" }
 ];
 
 let currentIndex = 0;
@@ -284,6 +294,67 @@ function log(msg) {
 
 // 当前播放的 Audio 对象
 let currentAudio = null;
+
+// 从本地文件播放（最可靠）
+function speakFromFile(audioFile, fallbackText, onEnd) {
+  // 停止当前播放
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  
+  const statusEl = document.querySelector('.play-status');
+  
+  try {
+    currentAudio = new Audio(audioFile);
+    
+    currentAudio.onloadstart = () => {
+      if (statusEl) {
+        statusEl.innerHTML = '<div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>';
+      }
+      log('🔊 加载音频: ' + audioFile);
+    };
+    
+    currentAudio.onended = () => {
+      if (statusEl) {
+        statusEl.textContent = '👆 点我听声音';
+      }
+      currentAudio = null;
+      log('✓ 播放完成');
+      if (onEnd) onEnd();
+    };
+    
+    currentAudio.onerror = (e) => {
+      log('⚠️ 本地音频加载失败，尝试在线TTS');
+      if (statusEl) statusEl.textContent = '👆 点我听声音';
+      // 回退到在线 TTS
+      if (fallbackText) {
+        speak(fallbackText, onEnd);
+      } else if (onEnd) {
+        onEnd();
+      }
+    };
+    
+    currentAudio.play().catch(err => {
+      log('⚠️ 播放失败: ' + err.message);
+      if (statusEl) statusEl.textContent = '👆 点我听声音';
+      // 回退到在线 TTS
+      if (fallbackText) {
+        speak(fallbackText, onEnd);
+      } else if (onEnd) {
+        onEnd();
+      }
+    });
+    
+  } catch(e) {
+    log('⚠️ Audio创建失败: ' + e.message);
+    if (fallbackText) {
+      speak(fallbackText, onEnd);
+    } else if (onEnd) {
+      onEnd();
+    }
+  }
+}
 
 function speak(text, onEnd) {
   // 停止当前播放
@@ -430,8 +501,14 @@ function renderDots() {
 }
 
 function speakDino() {
+  const dino = DINOS[currentIndex];
   log('🔊 播放语音: ' + currentIndex);
-  speak(DINOS[currentIndex].sound);
+  // 优先使用本地音频文件
+  if (dino.audioFile) {
+    speakFromFile(dino.audioFile, dino.sound);
+  } else {
+    speak(dino.sound);
+  }
 }
 
 function prevCard() {
