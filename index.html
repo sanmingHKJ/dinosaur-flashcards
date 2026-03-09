@@ -58,6 +58,7 @@ body {
   touch-action: manipulation;
 }
 .auto-btn.playing { background: #81C784; }
+.auto-btn.hidden { display: none; }
 /* 扩大自动播放按钮点击区域 */
 .auto-btn::before {
   content: '';
@@ -254,6 +255,18 @@ const synth = window.speechSynthesis || {
 };
 const debugEl = document.getElementById('debug');
 
+// 检测语音是否可用
+let speechAvailable = false;
+try {
+  speechAvailable = !!(window.speechSynthesis && 
+                       window.SpeechSynthesisUtterance &&
+                       typeof synth.speak === 'function');
+  log('语音检测: ' + (speechAvailable ? '可用' : '不可用'));
+} catch(e) {
+  speechAvailable = false;
+  log('语音检测失败: ' + e.message);
+}
+
 function log(msg) {
   if (debugMode) {
     console.log(msg);
@@ -316,6 +329,7 @@ function renderCard() {
     log(`✓ card元素: ${cardEl ? '存在' : '不存在'}`);
     
     if (cardEl) {
+      const playHint = speechAvailable ? '👆 点我听声音' : '';
       cardEl.innerHTML = `
         <div class="dino-img"><img src="${d.img}" alt="${d.name}"></div>
         <div class="dino-name">${d.name}</div>
@@ -323,7 +337,7 @@ function renderCard() {
           <span>${d.dietEmoji}</span>
           <span>🦴</span>
         </div>
-        <div class="play-status">👆 点我听声音</div>
+        <div class="play-status">${playHint}</div>
       `;
       log('✓ innerHTML已设置');
     }
@@ -565,6 +579,15 @@ function initButtons() {
 // 页面加载完成
 renderCard();
 initButtons();
+
+// 如果语音不可用，隐藏自动播放按钮
+if (!speechAvailable) {
+  const autoBtn = document.getElementById('autoBtn');
+  if (autoBtn) {
+    autoBtn.classList.add('hidden');
+    log('自动播放按钮已隐藏（语音不可用）');
+  }
+}
 
 // 阻止所有图片的长按保存菜单
 document.addEventListener('contextmenu', (e) => {
