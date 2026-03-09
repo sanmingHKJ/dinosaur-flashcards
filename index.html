@@ -12,6 +12,8 @@ body {
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background: linear-gradient(180deg, #E8F5E9 0%, #FFF8E1 100%);
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* 顶部进度 */
@@ -36,9 +38,10 @@ body {
   width: 40px; height: 40px; border-radius: 50%;
   border: none; font-size: 1.2em; cursor: pointer;
   background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .auto-btn.playing { background: #81C784; }
+.auto-btn:active { transform: scale(0.95); }
 
 /* 卡片区域 */
 .card-container {
@@ -56,7 +59,7 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   text-align: center;
   cursor: pointer;
-  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .card:active { opacity: 0.9; }
 
@@ -144,10 +147,10 @@ body {
   background: #FF7043;
   color: white;
   box-shadow: 0 4px 12px rgba(255,112,67,0.3);
-  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .nav-btn:active { transform: scale(0.95); }
-.nav-btn:disabled { background: #E0E0E0; box-shadow: none; }
+.nav-btn:disabled { background: #E0E0E0; box-shadow: none; opacity: 0.5; }
 .nav-btn.next { background: #42A5F5; box-shadow: 0 4px 12px rgba(66,165,245,0.3); }
 
 .nav-center {
@@ -160,40 +163,40 @@ body {
 <body>
 
 <div class="header" id="progressDots"></div>
-<button class="auto-btn" id="autoBtn" onclick="toggleAuto()">▶️</button>
+<button class="auto-btn" id="autoBtn">▶️</button>
 
 <div class="card-container">
-  <div class="card" id="card" onclick="speakDino()"></div>
+  <div class="card" id="card"></div>
 </div>
 
 <div class="nav-bar">
-  <button class="nav-btn" id="prevBtn" onclick="prevCard()">◀</button>
+  <button class="nav-btn" id="prevBtn">◀</button>
   <span class="nav-center" id="navCenter">1 / 10</span>
-  <button class="nav-btn next" id="nextBtn" onclick="nextCard()">▶</button>
+  <button class="nav-btn next" id="nextBtn">▶</button>
 </div>
 
 <script>
 const DINOS = [
   { name: "马门溪龙", img: "images/01_mamenchisaurus.png", dietEmoji: "🌿",
-    sound: "马门溪龙！脖子超级超级长，比长颈鹿还要长好几倍呢！" },
+    sound: "马门溪龙！脖子超级超级长,比长颈鹿还要长好几倍呢！" },
   { name: "无齿翼龙", img: "images/02_pteranodon.png", dietEmoji: "🐟",
-    sound: "无齿翼龙！会飞的大翅膀，在天上抓鱼吃！" },
+    sound: "无齿翼龙！会飞的大翅膀,在天上抓鱼吃！" },
   { name: "剑龙", img: "images/03_stegosaurus.png", dietEmoji: "🌿",
-    sound: "剑龙！背上有好多三角形的板子，尾巴上还有大刺！" },
+    sound: "剑龙！背上有好多三角形的板子,尾巴上还有大刺！" },
   { name: "腔骨龙", img: "images/04_coelophysis.png", dietEmoji: "🍖",
-    sound: "腔骨龙！跑得飞快的小恐龙，骨头是空心的，像吸管一样轻！" },
+    sound: "腔骨龙！跑得飞快的小恐龙,骨头是空心的,像吸管一样轻！" },
   { name: "双型齿翼龙", img: "images/05_dimorphodon.png", dietEmoji: "🍖",
-    sound: "双型齿翼龙！有两种牙齿的飞龙，头很大，萌萌的！" },
+    sound: "双型齿翼龙！有两种牙齿的飞龙,头很大,萌萌的！" },
   { name: "异特龙", img: "images/06_allosaurus.png", dietEmoji: "🍖",
-    sound: "异特龙！超级厉害的大恐龙，嘴巴可以张得很大很大！" },
+    sound: "异特龙！超级厉害的大恐龙,嘴巴可以张得很大很大！" },
   { name: "窃蛋龙", img: "images/07_oviraptor.png", dietEmoji: "🥚",
-    sound: "窃蛋龙！其实是个好妈妈，在保护自己的蛋宝宝呢！" },
+    sound: "窃蛋龙！其实是个好妈妈,在保护自己的蛋宝宝呢！" },
   { name: "美颌龙", img: "images/08_compsognathus.png", dietEmoji: "🍖",
-    sound: "美颌龙！只有小鸡那么大，是最小的恐龙，跑得可快了！" },
+    sound: "美颌龙！只有小鸡那么大,是最小的恐龙,跑得可快了！" },
   { name: "尖角龙", img: "images/09_centrosaurus.png", dietEmoji: "🌿",
-    sound: "尖角龙！鼻子上有一个大角，喜欢一大群一起走！" },
+    sound: "尖角龙！鼻子上有一个大角,喜欢一大群一起走！" },
   { name: "风神翼龙", img: "images/10_quetzalcoatlus.png", dietEmoji: "🍖",
-    sound: "风神翼龙！最大的飞行动物，站起来有长颈鹿那么高！" }
+    sound: "风神翼龙！最大的飞行动物,站起来有长颈鹿那么高！" }
 ];
 
 let currentIndex = 0;
@@ -210,10 +213,16 @@ function speak(text, onEnd) {
   u.rate = 0.8;
   u.pitch = 1.15;
   u.onstart = () => {
-    document.querySelector('.play-status').innerHTML = '<div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>';
+    const statusEl = document.querySelector('.play-status');
+    if (statusEl) {
+      statusEl.innerHTML = '<div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>';
+    }
   };
   u.onend = () => {
-    document.querySelector('.play-status').textContent = '👆 点我听声音';
+    const statusEl = document.querySelector('.play-status');
+    if (statusEl) {
+      statusEl.textContent = '👆 点我听声音';
+    }
     if (onEnd) onEnd();
   };
   u.onerror = u.onend;
@@ -301,24 +310,92 @@ function runAuto() {
   });
 }
 
-// 滑动
-let startX = 0;
-let startY = 0;
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
+// 初始化按钮事件监听器
+function initEventListeners() {
+  // 自动播放按钮
+  const autoBtn = document.getElementById('autoBtn');
+  autoBtn.addEventListener('click', toggleAuto);
+  autoBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    toggleAuto();
+  });
+  
+  // 上一张按钮
+  const prevBtn = document.getElementById('prevBtn');
+  prevBtn.addEventListener('click', prevCard);
+  prevBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    if (!prevBtn.disabled) prevCard();
+  });
+  
+  // 下一张按钮
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.addEventListener('click', nextCard);
+  nextBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    if (!nextBtn.disabled) nextCard();
+  });
+  
+  // 卡片点击播放
+  const card = document.getElementById('card');
+  let cardTouchStartTime = 0;
+  let cardTouchMoved = false;
+  
+  card.addEventListener('touchstart', () => {
+    cardTouchStartTime = Date.now();
+    cardTouchMoved = false;
+  }, { passive: true });
+  
+  card.addEventListener('touchmove', () => {
+    cardTouchMoved = true;
+  }, { passive: true });
+  
+  card.addEventListener('touchend', (e) => {
+    const touchDuration = Date.now() - cardTouchStartTime;
+    // 只有快速点击且没有移动才触发播放
+    if (!cardTouchMoved && touchDuration < 300) {
+      e.preventDefault();
+      speakDino();
+    }
+  });
+  
+  card.addEventListener('click', speakDino);
+}
+
+// 滑动切换卡片
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
 }, { passive: true });
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - startX;
-  const dy = e.changedTouches[0].clientY - startY;
-  // 只有水平滑动明显时才切换，避免干扰点击
-  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
-    if (dx > 0) prevCard();
-    else nextCard();
+
+document.addEventListener('touchend', (e) => {
+  // 如果触摸在按钮上，不处理滑动
+  if (e.target.closest('button')) return;
+  
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+  const dx = touchEndX - touchStartX;
+  const dy = touchEndY - touchStartY;
+  const duration = Date.now() - touchStartTime;
+  
+  // 只有明显的水平滑动且不是长按才切换卡片
+  if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2 && duration < 500) {
+    if (dx > 0 && currentIndex > 0) {
+      prevCard();
+    } else if (dx < 0 && currentIndex < DINOS.length - 1) {
+      nextCard();
+    }
   }
 }, { passive: true });
 
+// 页面加载完成后初始化
 renderCard();
+initEventListeners();
 </script>
 </body>
 </html>
