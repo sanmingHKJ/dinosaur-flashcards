@@ -6,14 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🦕 恐龙闪卡 🦖</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
 html, body { height: 100%; overflow: hidden; }
 body {
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background: linear-gradient(180deg, #E8F5E9 0%, #FFF8E1 100%);
   user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* 顶部进度 */
@@ -32,16 +37,26 @@ body {
 .dot.active { background: #FF7043; transform: scale(1.2); }
 .dot.seen { background: #81C784; }
 
+/* 调试信息 */
+.debug {
+  position: fixed; top: 50px; left: 10px; z-index: 999;
+  background: rgba(0,0,0,0.8); color: #0f0;
+  padding: 8px; font-size: 12px; border-radius: 4px;
+  font-family: monospace;
+  pointer-events: none;
+  display: none;
+}
+
 /* 自动播放按钮 */
 .auto-btn {
   position: fixed; top: 8px; right: 12px; z-index: 101;
   width: 40px; height: 40px; border-radius: 50%;
-  border: none; font-size: 1.2em; cursor: pointer;
+  border: none; font-size: 1.2em;
   background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  -webkit-tap-highlight-color: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
 }
 .auto-btn.playing { background: #81C784; }
-.auto-btn:active { transform: scale(0.95); }
 
 /* 卡片区域 */
 .card-container {
@@ -59,9 +74,7 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   text-align: center;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
-.card:active { opacity: 0.9; }
 
 /* 恐龙图片 */
 .dino-img {
@@ -74,6 +87,7 @@ body {
   object-fit: contain;
   filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.15));
   animation: gentleBounce 3s ease-in-out infinite;
+  pointer-events: none;
 }
 @keyframes gentleBounce {
   0%, 100% { transform: translateY(0); }
@@ -142,16 +156,26 @@ body {
 }
 .nav-btn {
   width: 72px; height: 72px; border-radius: 50%;
-  border: none; font-size: 2em; cursor: pointer;
+  border: none; font-size: 2em;
   display: flex; align-items: center; justify-content: center;
   background: #FF7043;
   color: white;
   box-shadow: 0 4px 12px rgba(255,112,67,0.3);
-  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  transition: transform 0.1s;
 }
-.nav-btn:active { transform: scale(0.95); }
-.nav-btn:disabled { background: #E0E0E0; box-shadow: none; opacity: 0.5; }
-.nav-btn.next { background: #42A5F5; box-shadow: 0 4px 12px rgba(66,165,245,0.3); }
+.nav-btn:disabled { 
+  background: #E0E0E0; 
+  box-shadow: none; 
+  opacity: 0.5; 
+}
+.nav-btn.next { 
+  background: #42A5F5; 
+  box-shadow: 0 4px 12px rgba(66,165,245,0.3); 
+}
+.nav-btn.pressed {
+  transform: scale(0.9);
+}
 
 .nav-center {
   font-size: 1.4em;
@@ -162,6 +186,7 @@ body {
 </head>
 <body>
 
+<div class="debug" id="debug">等待交互...</div>
 <div class="header" id="progressDots"></div>
 <button class="auto-btn" id="autoBtn">▶️</button>
 
@@ -203,8 +228,18 @@ let currentIndex = 0;
 let seen = new Set();
 let autoPlay = false;
 let autoTimer = null;
+let debugMode = false; // 设为 true 显示调试信息
 
 const synth = window.speechSynthesis;
+const debugEl = document.getElementById('debug');
+
+function log(msg) {
+  if (debugMode) {
+    console.log(msg);
+    debugEl.textContent = msg;
+    debugEl.style.display = 'block';
+  }
+}
 
 function speak(text, onEnd) {
   synth.cancel();
@@ -259,11 +294,13 @@ function renderDots() {
 }
 
 function speakDino() {
+  log('播放语音: ' + currentIndex);
   speak(DINOS[currentIndex].sound);
 }
 
 function prevCard() {
   if (currentIndex > 0) {
+    log('上一张');
     synth.cancel();
     currentIndex--;
     renderCard();
@@ -273,6 +310,7 @@ function prevCard() {
 
 function nextCard() {
   if (currentIndex < DINOS.length - 1) {
+    log('下一张');
     synth.cancel();
     currentIndex++;
     renderCard();
@@ -281,6 +319,7 @@ function nextCard() {
 }
 
 function toggleAuto() {
+  log('切换自动播放');
   autoPlay = !autoPlay;
   const btn = document.getElementById('autoBtn');
   if (autoPlay) {
@@ -310,92 +349,97 @@ function runAuto() {
   });
 }
 
-// 初始化按钮事件监听器
-function initEventListeners() {
-  // 自动播放按钮
-  const autoBtn = document.getElementById('autoBtn');
-  autoBtn.addEventListener('click', toggleAuto);
-  autoBtn.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    toggleAuto();
-  });
+// 通用触摸处理
+function handleTouch(element, callback) {
+  let touchStartTime = 0;
+  let touchMoved = false;
+  let touchStartPos = {x: 0, y: 0};
   
-  // 上一张按钮
-  const prevBtn = document.getElementById('prevBtn');
-  prevBtn.addEventListener('click', prevCard);
-  prevBtn.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    if (!prevBtn.disabled) prevCard();
-  });
-  
-  // 下一张按钮
-  const nextBtn = document.getElementById('nextBtn');
-  nextBtn.addEventListener('click', nextCard);
-  nextBtn.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    if (!nextBtn.disabled) nextCard();
-  });
-  
-  // 卡片点击播放
-  const card = document.getElementById('card');
-  let cardTouchStartTime = 0;
-  let cardTouchMoved = false;
-  
-  card.addEventListener('touchstart', () => {
-    cardTouchStartTime = Date.now();
-    cardTouchMoved = false;
-  }, { passive: true });
-  
-  card.addEventListener('touchmove', () => {
-    cardTouchMoved = true;
-  }, { passive: true });
-  
-  card.addEventListener('touchend', (e) => {
-    const touchDuration = Date.now() - cardTouchStartTime;
-    // 只有快速点击且没有移动才触发播放
-    if (!cardTouchMoved && touchDuration < 300) {
-      e.preventDefault();
-      speakDino();
+  // 触摸开始
+  element.addEventListener('touchstart', (e) => {
+    touchStartTime = Date.now();
+    touchMoved = false;
+    if (e.touches[0]) {
+      touchStartPos.x = e.touches[0].clientX;
+      touchStartPos.y = e.touches[0].clientY;
     }
-  });
+    element.classList.add('pressed');
+    log('touchstart: ' + element.id);
+  }, {passive: false});
   
-  card.addEventListener('click', speakDino);
+  // 触摸移动
+  element.addEventListener('touchmove', (e) => {
+    if (e.touches[0]) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartPos.x);
+      const dy = Math.abs(e.touches[0].clientY - touchStartPos.y);
+      if (dx > 10 || dy > 10) {
+        touchMoved = true;
+        element.classList.remove('pressed');
+      }
+    }
+  }, {passive: true});
+  
+  // 触摸结束
+  element.addEventListener('touchend', (e) => {
+    element.classList.remove('pressed');
+    const duration = Date.now() - touchStartTime;
+    log(`touchend: ${element.id}, moved=${touchMoved}, dur=${duration}`);
+    
+    // 快速点击且没移动
+    if (!touchMoved && duration < 500) {
+      e.preventDefault();
+      e.stopPropagation();
+      log('执行回调: ' + element.id);
+      callback();
+    }
+  }, {passive: false});
+  
+  // 触摸取消
+  element.addEventListener('touchcancel', () => {
+    element.classList.remove('pressed');
+    log('touchcancel: ' + element.id);
+  }, {passive: true});
+  
+  // 点击事件作为备用
+  element.addEventListener('click', (e) => {
+    e.preventDefault();
+    log('click fallback: ' + element.id);
+    callback();
+  });
 }
 
-// 滑动切换卡片
-let touchStartX = 0;
-let touchStartY = 0;
-let touchStartTime = 0;
+// 初始化所有按钮
+function initButtons() {
+  handleTouch(document.getElementById('autoBtn'), toggleAuto);
+  handleTouch(document.getElementById('prevBtn'), () => {
+    if (currentIndex > 0) prevCard();
+  });
+  handleTouch(document.getElementById('nextBtn'), () => {
+    if (currentIndex < DINOS.length - 1) nextCard();
+  });
+  handleTouch(document.getElementById('card'), speakDino);
+}
 
-document.addEventListener('touchstart', (e) => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-  touchStartTime = Date.now();
-}, { passive: true });
-
-document.addEventListener('touchend', (e) => {
-  // 如果触摸在按钮上，不处理滑动
-  if (e.target.closest('button')) return;
-  
-  const touchEndX = e.changedTouches[0].clientX;
-  const touchEndY = e.changedTouches[0].clientY;
-  const dx = touchEndX - touchStartX;
-  const dy = touchEndY - touchStartY;
-  const duration = Date.now() - touchStartTime;
-  
-  // 只有明显的水平滑动且不是长按才切换卡片
-  if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2 && duration < 500) {
-    if (dx > 0 && currentIndex > 0) {
-      prevCard();
-    } else if (dx < 0 && currentIndex < DINOS.length - 1) {
-      nextCard();
-    }
-  }
-}, { passive: true });
-
-// 页面加载完成后初始化
+// 页面加载完成
 renderCard();
-initEventListeners();
+initButtons();
+
+// 双击左上角显示调试信息
+let debugTapCount = 0;
+let debugTapTimer = null;
+document.querySelector('.header').addEventListener('click', () => {
+  debugTapCount++;
+  clearTimeout(debugTapTimer);
+  if (debugTapCount >= 3) {
+    debugMode = !debugMode;
+    debugEl.style.display = debugMode ? 'block' : 'none';
+    log('调试模式: ' + debugMode);
+    debugTapCount = 0;
+  }
+  debugTapTimer = setTimeout(() => { debugTapCount = 0; }, 1000);
+});
+
+log('页面加载完成');
 </script>
 </body>
 </html>
