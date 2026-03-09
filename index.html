@@ -248,7 +248,10 @@ let autoPlay = false;
 let autoTimer = null;
 let debugMode = false; // 设为 true 显示调试信息
 
-const synth = window.speechSynthesis;
+const synth = window.speechSynthesis || { 
+  cancel: function() {}, 
+  speak: function() {} 
+};
 const debugEl = document.getElementById('debug');
 
 function log(msg) {
@@ -260,7 +263,18 @@ function log(msg) {
 }
 
 function speak(text, onEnd) {
-  synth.cancel();
+  if (!synth || !synth.cancel || !synth.speak) {
+    log('⚠️ speechSynthesis不可用');
+    if (onEnd) onEnd();
+    return;
+  }
+  
+  try {
+    synth.cancel();
+  } catch(e) {
+    log('⚠️ synth.cancel失败: ' + e.message);
+  }
+  
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'zh-CN';
   u.rate = 0.8;
@@ -279,7 +293,13 @@ function speak(text, onEnd) {
     if (onEnd) onEnd();
   };
   u.onerror = u.onend;
-  synth.speak(u);
+  
+  try {
+    synth.speak(u);
+  } catch(e) {
+    log('⚠️ synth.speak失败: ' + e.message);
+    if (onEnd) onEnd();
+  }
 }
 
 function renderCard() {
@@ -342,16 +362,23 @@ function speakDino() {
 }
 
 function prevCard() {
-  log(`prevCard调用: currentIndex=${currentIndex}`);
-  if (currentIndex > 0) {
-    log('⬅️ 切换到上一张');
-    synth.cancel();
-    currentIndex--;
-    log(`新index: ${currentIndex}`);
-    renderCard();
-    if (autoPlay) speakDino();
-  } else {
-    log('❌ 已经是第一张，无法后退');
+  try {
+    log(`prevCard调用: currentIndex=${currentIndex}`);
+    if (currentIndex > 0) {
+      log('⬅️ 切换到上一张');
+      if (synth && synth.cancel) {
+        try { synth.cancel(); } catch(e) {}
+      }
+      currentIndex--;
+      log(`✓ 新index: ${currentIndex}`);
+      renderCard();
+      if (autoPlay) speakDino();
+    } else {
+      log('❌ 已经是第一张，无法后退');
+    }
+  } catch(err) {
+    log('❌❌❌ prevCard错误: ' + err.message);
+    console.error('prevCard error:', err);
   }
 }
 
@@ -360,8 +387,14 @@ function nextCard() {
     log(`nextCard调用: currentIndex=${currentIndex}, max=${DINOS.length - 1}`);
     if (currentIndex < DINOS.length - 1) {
       log('➡️ 切换到下一张');
-      synth.cancel();
-      log('✓ synth.cancel完成');
+      if (synth && synth.cancel) {
+        try { 
+          synth.cancel(); 
+          log('✓ synth.cancel完成');
+        } catch(e) {
+          log('⚠️ synth.cancel失败(已忽略)');
+        }
+      }
       currentIndex++;
       log(`✓ 新index: ${currentIndex}`);
       renderCard();
@@ -390,7 +423,9 @@ function toggleAuto() {
   } else {
     btn.textContent = '▶️';
     btn.classList.remove('playing');
-    synth.cancel();
+    if (synth && synth.cancel) {
+      try { synth.cancel(); } catch(e) {}
+    }
     clearTimeout(autoTimer);
   }
 }
