@@ -392,11 +392,11 @@ function handleTouch(element, callback) {
   element.addEventListener('touchend', (e) => {
     element.classList.remove('pressed');
     const duration = Date.now() - touchStartTime;
-    const isDisabled = element.disabled;
+    const isDisabled = element.disabled === true;
     log(`touchend: ${element.id}, moved=${touchMoved}, dur=${duration}, disabled=${isDisabled}`);
     
-    // 放宽时间限制到 1000ms，且没移动
-    if (!touchMoved && duration < 1000 && !isDisabled) {
+    // 放宽时间限制到 2000ms（华为设备响应慢），且没移动
+    if (!touchMoved && duration < 2000 && !isDisabled) {
       e.preventDefault();
       e.stopPropagation();
       log('✅ 执行回调: ' + element.id);
