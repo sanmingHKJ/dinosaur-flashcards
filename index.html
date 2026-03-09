@@ -55,6 +55,7 @@ body {
   background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.12);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  touch-action: manipulation;
 }
 .auto-btn.playing { background: #81C784; }
 
@@ -74,6 +75,7 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   text-align: center;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 /* 恐龙图片 */
@@ -163,6 +165,7 @@ body {
   box-shadow: 0 4px 12px rgba(255,112,67,0.3);
   cursor: pointer;
   transition: transform 0.1s;
+  touch-action: manipulation;
 }
 .nav-btn:disabled { 
   background: #E0E0E0; 
@@ -355,6 +358,12 @@ function handleTouch(element, callback) {
   let touchMoved = false;
   let touchStartPos = {x: 0, y: 0};
   
+  // 阻止长按菜单
+  element.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+  });
+  
   // 触摸开始
   element.addEventListener('touchstart', (e) => {
     touchStartTime = Date.now();
@@ -426,6 +435,13 @@ function initButtons() {
 // 页面加载完成
 renderCard();
 initButtons();
+
+// 阻止所有图片的长按保存菜单
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+  }
+});
 
 // 双击左上角显示调试信息
 let debugTapCount = 0;
