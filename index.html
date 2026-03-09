@@ -383,7 +383,10 @@ function handleTouch(element, callback) {
   // 指针按下 - 设置延迟执行
   element.addEventListener('pointerdown', (e) => {
     // 清除之前的定时器
-    if (tapTimer) clearTimeout(tapTimer);
+    if (tapTimer) {
+      clearTimeout(tapTimer);
+      log('清除旧定时器');
+    }
     
     pointerMoved = false;
     isExecuting = false;
@@ -393,15 +396,18 @@ function handleTouch(element, callback) {
     log('pointerdown: ' + element.id);
     
     // 150ms 后执行（如果没移动）
+    log('设置定时器 150ms');
     tapTimer = setTimeout(() => {
       const isDisabled = element.disabled === true;
-      log(`延迟检查: ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}`);
+      log(`⏰ 定时器触发! ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
       
       if (!pointerMoved && !isDisabled && !isExecuting) {
         isExecuting = true;
         element.classList.remove('pressed');
         log('✅ 执行回调(延迟): ' + element.id);
         callback();
+      } else {
+        log(`❌ 定时器跳过: moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
       }
     }, 150);
   });
@@ -432,11 +438,9 @@ function handleTouch(element, callback) {
     }
   });
   
-  // 指针取消 - 只有真正取消才清除
+  // 指针取消 - 不清除定时器，让它继续
   element.addEventListener('pointercancel', (e) => {
-    element.classList.remove('pressed');
-    clearTimeout(tapTimer);
-    log('pointercancel: ' + element.id);
+    log('pointercancel: ' + element.id + ' (忽略，不清除定时器)');
   });
   
   // 指针离开 - 不取消定时器，让延迟执行继续
