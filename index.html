@@ -352,12 +352,12 @@ function runAuto() {
   });
 }
 
-// 通用触摸处理 - 使用 pointer events（更可靠）
+// 通用触摸处理 - 华为设备专用方案（不依赖 up 事件）
 function handleTouch(element, callback) {
-  let pointerStartTime = 0;
+  let tapTimer = null;
   let pointerMoved = false;
   let pointerStartPos = {x: 0, y: 0};
-  let pointerId = null;
+  let isExecuting = false;
   
   // 阻止长按菜单
   element.addEventListener('contextmenu', (e) => {
@@ -365,59 +365,70 @@ function handleTouch(element, callback) {
     return false;
   });
   
-  // 指针按下
+  // 指针按下 - 设置延迟执行
   element.addEventListener('pointerdown', (e) => {
-    pointerStartTime = Date.now();
+    // 清除之前的定时器
+    if (tapTimer) clearTimeout(tapTimer);
+    
     pointerMoved = false;
+    isExecuting = false;
     pointerStartPos.x = e.clientX;
     pointerStartPos.y = e.clientY;
-    pointerId = e.pointerId;
     element.classList.add('pressed');
     log('pointerdown: ' + element.id);
-  });
-  
-  // 指针移动
-  element.addEventListener('pointermove', (e) => {
-    if (pointerId === e.pointerId) {
-      const dx = Math.abs(e.clientX - pointerStartPos.x);
-      const dy = Math.abs(e.clientY - pointerStartPos.y);
-      if (dx > 10 || dy > 10) {
-        pointerMoved = true;
+    
+    // 200ms 后执行（如果没移动）
+    tapTimer = setTimeout(() => {
+      const isDisabled = element.disabled === true;
+      log(`延迟检查: ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}`);
+      
+      if (!pointerMoved && !isDisabled && !isExecuting) {
+        isExecuting = true;
         element.classList.remove('pressed');
-        log('pointermove: moved!');
+        log('✅ 执行回调(延迟): ' + element.id);
+        callback();
       }
+    }, 200);
+  });
+  
+  // 指针移动 - 取消执行
+  element.addEventListener('pointermove', (e) => {
+    const dx = Math.abs(e.clientX - pointerStartPos.x);
+    const dy = Math.abs(e.clientY - pointerStartPos.y);
+    if (dx > 10 || dy > 10) {
+      pointerMoved = true;
+      element.classList.remove('pressed');
+      clearTimeout(tapTimer);
+      log('pointermove: 移动取消');
     }
   });
   
-  // 指针抬起
+  // 指针抬起 - 如果还没执行，立即执行
   element.addEventListener('pointerup', (e) => {
-    if (pointerId !== e.pointerId) return;
-    
+    log('pointerup: ' + element.id);
     element.classList.remove('pressed');
-    const duration = Date.now() - pointerStartTime;
+    
     const isDisabled = element.disabled === true;
-    log(`pointerup: ${element.id}, moved=${pointerMoved}, dur=${duration}, disabled=${isDisabled}`);
-    
-    // 没移动且没禁用
-    if (!pointerMoved && !isDisabled) {
-      e.preventDefault();
-      e.stopPropagation();
-      log('✅ 执行回调: ' + element.id);
+    if (!pointerMoved && !isDisabled && !isExecuting) {
+      clearTimeout(tapTimer);
+      isExecuting = true;
+      log('✅ 执行回调(立即): ' + element.id);
       callback();
-    } else {
-      log(`❌ 跳过: moved=${pointerMoved}, disabled=${isDisabled}`);
     }
-    
-    pointerId = null;
   });
   
   // 指针取消
   element.addEventListener('pointercancel', (e) => {
-    if (pointerId === e.pointerId) {
-      element.classList.remove('pressed');
-      log('pointercancel: ' + element.id);
-      pointerId = null;
-    }
+    element.classList.remove('pressed');
+    clearTimeout(tapTimer);
+    log('pointercancel: ' + element.id);
+  });
+  
+  // 指针离开元素区域
+  element.addEventListener('pointerleave', (e) => {
+    element.classList.remove('pressed');
+    clearTimeout(tapTimer);
+    log('pointerleave: ' + element.id);
   });
 }
 
