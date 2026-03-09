@@ -393,12 +393,11 @@ function handleTouch(element, callback) {
   // RAF 检查函数
   function checkAndExecute() {
     const elapsed = Date.now() - startTime;
-    log(`RAF检查: ${element.id}, elapsed=${elapsed}ms, moved=${pointerMoved}`);
     
-    if (elapsed >= 150) {
-      // 时间到了
+    if (elapsed >= 30) {
+      // 时间到了（缩短到30ms，更快响应）
       const isDisabled = element.disabled === true;
-      log(`⏰ RAF触发! ${element.id}, moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
+      log(`⏰ RAF触发! ${element.id}, elapsed=${elapsed}ms, moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
       
       if (!pointerMoved && !isDisabled && !isExecuting) {
         isExecuting = true;
@@ -408,6 +407,7 @@ function handleTouch(element, callback) {
       } else {
         log(`❌ RAF跳过: moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
       }
+      rafId = null;
     } else {
       // 继续等待
       rafId = requestAnimationFrame(checkAndExecute);
@@ -445,24 +445,27 @@ function handleTouch(element, callback) {
       if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
+        log(`❌ pointermove取消RAF: dx=${dx}, dy=${dy}`);
       }
-      log('pointermove: 大幅移动取消RAF');
     }
   });
   
   // 指针抬起 - 如果还没执行，立即执行
   element.addEventListener('pointerup', (e) => {
-    log('pointerup: ' + element.id);
+    log('pointerup触发: ' + element.id);
     element.classList.remove('pressed');
     
     const isDisabled = element.disabled === true;
+    log(`pointerup检查: moved=${pointerMoved}, disabled=${isDisabled}, isExecuting=${isExecuting}`);
+    
     if (!pointerMoved && !isDisabled && !isExecuting) {
       if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
+        log('pointerup取消RAF');
       }
       isExecuting = true;
-      log('✅ 执行回调(立即): ' + element.id);
+      log('✅ 执行回调(pointerup立即): ' + element.id);
       callback();
     }
   });
