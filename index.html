@@ -283,41 +283,48 @@ function speak(text, onEnd) {
 }
 
 function renderCard() {
-  log(`📄 renderCard开始: currentIndex=${currentIndex}`);
-  
-  const d = DINOS[currentIndex];
-  log(`恐龙数据: ${d.name}`);
-  
-  seen.add(currentIndex);
-  
-  const cardEl = document.getElementById('card');
-  log(`card元素: ${cardEl ? '存在' : '不存在'}`);
-  
-  if (cardEl) {
-    cardEl.innerHTML = `
-      <div class="dino-img"><img src="${d.img}" alt="${d.name}"></div>
-      <div class="dino-name">${d.name}</div>
-      <div class="dino-tags">
-        <span>${d.dietEmoji}</span>
-        <span>🦴</span>
-      </div>
-      <div class="play-status">👆 点我听声音</div>
-    `;
-    log('✅ innerHTML已设置');
+  try {
+    log(`📄 renderCard开始: currentIndex=${currentIndex}`);
+    
+    const d = DINOS[currentIndex];
+    log(`✓ 恐龙数据: ${d.name}`);
+    
+    seen.add(currentIndex);
+    log('✓ seen已添加');
+    
+    const cardEl = document.getElementById('card');
+    log(`✓ card元素: ${cardEl ? '存在' : '不存在'}`);
+    
+    if (cardEl) {
+      cardEl.innerHTML = `
+        <div class="dino-img"><img src="${d.img}" alt="${d.name}"></div>
+        <div class="dino-name">${d.name}</div>
+        <div class="dino-tags">
+          <span>${d.dietEmoji}</span>
+          <span>🦴</span>
+        </div>
+        <div class="play-status">👆 点我听声音</div>
+      `;
+      log('✓ innerHTML已设置');
+    }
+    
+    const navCenter = document.getElementById('navCenter');
+    if (navCenter) {
+      navCenter.textContent = `${currentIndex + 1} / ${DINOS.length}`;
+      log(`✓ navCenter已更新: ${navCenter.textContent}`);
+    }
+    
+    document.getElementById('prevBtn').disabled = currentIndex === 0;
+    document.getElementById('nextBtn').disabled = currentIndex === DINOS.length - 1;
+    log(`✓ 按钮状态已更新`);
+    
+    renderDots();
+    log('✓ renderDots完成');
+    log('✅✅✅ renderCard全部完成');
+  } catch(err) {
+    log('❌❌❌ renderCard错误: ' + err.message);
+    console.error('renderCard error:', err);
   }
-  
-  const navCenter = document.getElementById('navCenter');
-  if (navCenter) {
-    navCenter.textContent = `${currentIndex + 1} / ${DINOS.length}`;
-    log(`✅ navCenter已更新: ${navCenter.textContent}`);
-  }
-  
-  document.getElementById('prevBtn').disabled = currentIndex === 0;
-  document.getElementById('nextBtn').disabled = currentIndex === DINOS.length - 1;
-  log(`✅ 按钮状态已更新`);
-  
-  renderDots();
-  log('✅ renderCard完成');
 }
 
 function renderDots() {
@@ -349,17 +356,26 @@ function prevCard() {
 }
 
 function nextCard() {
-  log(`nextCard调用: currentIndex=${currentIndex}, max=${DINOS.length - 1}`);
-  if (currentIndex < DINOS.length - 1) {
-    log('➡️ 切换到下一张');
-    synth.cancel();
-    currentIndex++;
-    log(`新index: ${currentIndex}`);
-    renderCard();
-    log('renderCard完成');
-    if (autoPlay) speakDino();
-  } else {
-    log('❌ 已经是最后一张，无法前进');
+  try {
+    log(`nextCard调用: currentIndex=${currentIndex}, max=${DINOS.length - 1}`);
+    if (currentIndex < DINOS.length - 1) {
+      log('➡️ 切换到下一张');
+      synth.cancel();
+      log('✓ synth.cancel完成');
+      currentIndex++;
+      log(`✓ 新index: ${currentIndex}`);
+      renderCard();
+      log('✓ renderCard完成');
+      if (autoPlay) {
+        log('自动播放开启，准备播放');
+        speakDino();
+      }
+    } else {
+      log('❌ 已经是最后一张，无法前进');
+    }
+  } catch(err) {
+    log('❌❌❌ nextCard错误: ' + err.message);
+    console.error('nextCard error:', err);
   }
 }
 
